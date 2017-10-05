@@ -1,5 +1,5 @@
-require('dotenv').config();
-const db = require('./db').default;
+import db from './db';
+import './telegram/bot';
 
 db('car')
   .select()

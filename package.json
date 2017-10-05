@@ -10,7 +10,9 @@
     "dotenv": "^4.0.0",
     "knex": "^0.13.0",
     "pg": "^7.3.0",
-    "telegraf": "^3.12.1"
+    "telegraf": "^3.12.1",
+    "telegraf-flow": "^8.3.0",
+    "telegraf-logger": "^1.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -42,9 +44,6 @@
     "lint": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
     "fix":
       "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" --fix .",
-    "build": "node tools/build.js",
-    "build-watch": "node tools/build.js --watch",
-    "deploy": "node tools/publish.js",
-    "start": "node tools/run.js"
+    "start": "nodemon --exec babel-node -- ./index.js"
   }
 }
