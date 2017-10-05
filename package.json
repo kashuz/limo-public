@@ -1,0 +1,50 @@
+{
+  "name": "limo",
+  "version": "0.0.1",
+  "description": "Limo.uz - Telegram Bot",
+  "main": "src/index.js",
+  "repository": "https://bitbucket.org/lamuz/limo",
+  "author": "Olim Saidov <olim.mail@gmail.com>",
+  "private": true,
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "knex": "^0.13.0",
+    "pg": "^7.3.0",
+    "telegraf": "^3.12.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.26.0",
+    "chokidar": "^1.7.0",
+    "del": "3.0.0",
+    "eslint": "^4.7.2",
+    "eslint-config-airbnb-base": "^12.0.1",
+    "eslint-config-prettier": "^2.6.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-prettier": "^2.3.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^4.2.3",
+    "prettier": "^1.7.1"
+  },
+  "lint-staged": {
+    "*.js": ["eslint --fix", "git add --force"],
+    "*.{json,gyp}": ["prettier --parser json --write", "git add --force"]
+  },
+  "scripts": {
+    "precommit": "lint-staged",
+    "lint": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
+    "fix":
+      "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" --fix .",
+    "build": "node tools/build.js",
+    "build-watch": "node tools/build.js --watch",
+    "deploy": "node tools/publish.js",
+    "start": "node tools/run.js"
+  }
+}

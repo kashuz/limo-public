@@ -1,0 +1,18 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "transform-class-properties",
+    "transform-export-extensions",
+    "transform-object-rest-spread"
+  ],
+  "retainLines": true
+}
