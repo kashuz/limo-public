@@ -1,7 +1,7 @@
 module.exports = {
   parser: 'babel-eslint',
   extends: ['airbnb-base', 'prettier'],
-  plugins: ['prettier'],
+  plugins: ['flowtype', 'prettier'],
   rules: {
     'prettier/prettier': [
       'error',
@@ -10,5 +10,6 @@ module.exports = {
         trailingComma: 'all',
       },
     ],
+    'flowtype/define-flow-type': 1,
   },
 };
