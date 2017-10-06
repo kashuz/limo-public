@@ -1,10 +1,7 @@
 {
   "events": {
-    "restart":
-      "osascript -e 'display notification \"Application restarted\" with title \"Nodemon\" sound name \"Frog\"'",
-    "exit":
-      "osascript -e 'display notification \"Application terminated\" with title \"Nodemon\" sound name \"Basso\"'",
     "crash":
       "osascript -e 'display notification \"Application crashed\" with title \"Nodemon\" sound name \"Basso\"'"
-  }
+  },
+  "signal": "SIGKILL"
 }
