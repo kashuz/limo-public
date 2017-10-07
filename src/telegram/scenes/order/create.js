@@ -21,7 +21,9 @@ function format(order) {
   return `
 Order #${order.id}
 📍 ${order.location ? address(order.location) : 'Location not set'}
-🗓 ${order.date ? date(order.date) : 'Date not set'}
+🗓 ${order.date
+    ? `${date(order.date)} (${order.start_time} - ${order.finish_time})`
+    : 'Date not set'}
 `;
 }
 

@@ -6,7 +6,7 @@ import { enabled } from '../../../util/geo';
 import db from '../../../db';
 import action from '../../action';
 
-const { reply, reset } = action('scene.order.location.action');
+const { reply, reset } = action('scene.order.location.message');
 const scene = new Scene('order.location');
 
 const keyboard = extra.markup(m =>
