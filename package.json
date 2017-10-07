@@ -10,6 +10,8 @@
     "bluebird": "^3.5.1",
     "dotenv": "^4.0.0",
     "knex": "^0.13.0",
+    "moment": "^2.18.1",
+    "node-calendar": "^0.1.4",
     "node-geocoder": "^3.21.0",
     "pg": "^7.3.0",
     "ramda": "^0.24.1",

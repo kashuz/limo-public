@@ -5,6 +5,7 @@ import agreement from '../scenes/agreement';
 import plans from '../scenes/plans';
 import orderCreate from '../scenes/order/create';
 import orderLocation from '../scenes/order/location';
+import orderDate from '../scenes/order/date';
 
 const flow = new TelegrafFlow();
 flow.register(menu);
@@ -13,5 +14,6 @@ flow.register(agreement);
 flow.register(plans);
 flow.register(orderCreate);
 flow.register(orderLocation);
+flow.register(orderDate);
 
 export default flow;

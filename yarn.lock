@@ -2411,6 +2411,10 @@ minimist@~1.1.0:
   dependencies:
     minimist "0.0.8"
 
+moment@^2.18.1:
+  version "2.18.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -2426,6 +2430,10 @@ nan@^2.3.0:
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
+
+node-calendar@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/node-calendar/-/node-calendar-0.1.4.tgz#35eba5b115ed13252fb2223585d0f3beb5f92216"
 
 node-fetch@^1.6.3:
   version "1.7.3"
