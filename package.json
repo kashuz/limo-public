@@ -7,10 +7,13 @@
   "author": "Olim Saidov <olim.mail@gmail.com>",
   "private": true,
   "dependencies": {
+    "bluebird": "^3.5.1",
     "dotenv": "^4.0.0",
     "knex": "^0.13.0",
+    "node-geocoder": "^3.21.0",
     "pg": "^7.3.0",
     "ramda": "^0.24.1",
+    "ramdasauce": "^2.1.0",
     "telegraf": "^3.12.1",
     "telegraf-flow": "^8.3.0",
     "telegraf-logger": "^1.0.3"
@@ -37,6 +40,7 @@
     "flow-bin": "^0.55.0",
     "husky": "^0.14.3",
     "lint-staged": "^4.2.3",
+    "nodemon": "^1.12.1",
     "prettier": "^1.7.1"
   },
   "lint-staged": {

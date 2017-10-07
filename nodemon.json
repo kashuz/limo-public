@@ -3,5 +3,6 @@
     "crash":
       "osascript -e 'display notification \"Application crashed\" with title \"Nodemon\" sound name \"Basso\"'"
   },
-  "signal": "SIGKILL"
+  "signal": "SIGTERM",
+  "delay": "1000"
 }

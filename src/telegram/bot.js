@@ -1,6 +1,7 @@
 // @flow
 
 import Telegraf from 'telegraf';
+import r from 'ramda';
 import logger from './middlewares/logger';
 import session from './middlewares/session';
 import flow from './middlewares/flow';
@@ -13,12 +14,9 @@ bot.use(session);
 bot.use(flow);
 bot.use(auth);
 
-bot.command('/oldschool', ctx => ctx.reply('Hello'));
-bot.command('/modern', ctx => {
-  ctx.flow.enter('welcome');
+bot.command('/flow', ctx => {
+  ctx.flow.enter(r.last(ctx.message.text.split(' ')));
 });
-
-bot.command('/hipster', Telegraf.reply('λ'));
 
 bot.startPolling();
 

@@ -1,37 +1,38 @@
+import r from 'ramda';
 import { Scene } from 'telegraf-flow';
-import { Extra } from 'telegraf';
+import db from '../../db';
+import action from '../action';
+import vertical from '../keyboards/vertical';
 
+const { reply, remove } = action('scene.menu.message');
 const scene = new Scene('menu');
 
-scene.enter(ctx => {
-  ctx.reply(
-    'Menu',
-    Extra.markup(markup =>
-      markup.inlineKeyboard(
-        [
-          markup.callbackButton('New order', 'menu.order'),
-          markup.callbackButton('Plans', 'menu.plans'),
-          markup.callbackButton('My orders', 'menu.history'),
-          markup.callbackButton('Change phone', 'menu.phone-number'),
-        ],
-        { columns: 1 },
-      ),
-    ),
-  );
+const keyboard = vertical({
+  '🚘 New order': 'order',
+  '🏷 Plans': 'plans',
+  '📔 My orders': 'history',
+  '☎️ Change phone': 'phone-number',
 });
 
-const map = {
-  order: 'order.create',
-  plans: 'plans',
-  history: 'orders.list',
-  'phone-number': 'settings.phone-number',
-};
+function create(user) {
+  return db('order')
+    .insert({ user_id: user })
+    .returning('*')
+    .then(r.head);
+}
 
-scene.action(/menu\.(.+)/, ctx =>
-  ctx
-    .answerCallbackQuery()
-    .then(() => ctx.deleteMessage())
-    .then(() => map[ctx.match[1]] && ctx.flow.enter(map[ctx.match[1]])),
+scene.enter(ctx => reply(ctx, 'Menu', keyboard));
+
+scene.action('order', ctx =>
+  create(ctx.user.id)
+    .tap(() => remove(ctx))
+    .then(order => ctx.flow.enter('order.create', order)),
 );
+
+scene.action(/(.+)/, ctx =>
+  ctx.answerCallbackQuery(`Not implemented ${ctx.match[1]}`),
+);
+
+scene.use((ctx, next) => reply(ctx, `Menu`, keyboard).then(next));
 
 export default scene;
