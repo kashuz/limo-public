@@ -22,16 +22,19 @@ scene.enter(ctx =>
 
 scene.action(/time\.(\d+:\d+)/, ctx =>
   ctx.answerCallbackQuery().then(() =>
-    update(ctx.flow.state.id, ctx.flow.state.start, ctx.match[1])
+    update(ctx.flow.state.order.id, ctx.flow.state.start, ctx.match[1])
       .tap(() => ctx.reply('✅ Time saved'))
       .then(order =>
-        b.all([reset(ctx), ctx.flow.enter('order.create', order)]),
+        b.all([reset(ctx), ctx.flow.enter('order.create', { order })]),
       ),
   ),
 );
 
 scene.action('cancel', ctx =>
-  b.all([reset(ctx), ctx.flow.enter('order.create', ctx.flow.state)]),
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.create', { order: ctx.flow.state.order }),
+  ]),
 );
 
 scene.action('noop', ctx => ctx.answerCallbackQuery('Please choose end time'));

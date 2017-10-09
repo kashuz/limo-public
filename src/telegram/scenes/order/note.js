@@ -23,13 +23,18 @@ function update(id, note) {
 scene.enter(ctx => reply(ctx, 'Please send notes', keyboard));
 
 scene.action('cancel', ctx =>
-  b.all([reset(ctx), ctx.flow.enter('order.create', ctx.flow.state)]),
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.create', { order: ctx.flow.state.order }),
+  ]),
 );
 
 scene.on('text', ctx =>
-  update(ctx.flow.state.id, ctx.message.text)
+  update(ctx.flow.state.order.id, ctx.message.text)
     .tap(() => ctx.reply('✅ Notes saved'))
-    .then(order => b.all([reset(ctx), ctx.flow.enter('order.create', order)])),
+    .then(order =>
+      b.all([reset(ctx), ctx.flow.enter('order.create', { order })]),
+    ),
 );
 
 scene.use((ctx, next) => reply(ctx, 'Please send notes', keyboard).then(next));

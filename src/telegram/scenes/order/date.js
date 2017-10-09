@@ -20,7 +20,7 @@ function update(id, date) {
 }
 
 scene.enter(ctx =>
-  reply(ctx, 'Please choose date', calendar(init(ctx.flow.state.date))),
+  reply(ctx, 'Please choose date', calendar(init(ctx.flow.state.order.date))),
 );
 
 scene.action(/month\.(\d+)\.(\d+)/, ctx =>
@@ -30,15 +30,23 @@ scene.action(/month\.(\d+)\.(\d+)/, ctx =>
 );
 
 scene.action(/day\.(\d+)\.(\d+)\.(\d+)/, ctx =>
-  update(ctx.flow.state.id, date(ctx.match[1], ctx.match[2], ctx.match[3]))
+  update(
+    ctx.flow.state.order.id,
+    date(ctx.match[1], ctx.match[2], ctx.match[3]),
+  )
     .tap(() => ctx.reply('✅ Date saved'))
-    .then(order => b.all([reset(ctx), ctx.flow.enter('order.create', order)])),
+    .then(order =>
+      b.all([reset(ctx), ctx.flow.enter('order.create', { order })]),
+    ),
 );
 
 scene.action('noop', ctx => ctx.answerCallbackQuery('Please choose date'));
 
 scene.action('cancel', ctx =>
-  b.all([reset(ctx), ctx.flow.enter('order.create', ctx.flow.state)]),
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.create', { order: ctx.flow.state.order }),
+  ]),
 );
 
 scene.use((ctx, next) =>

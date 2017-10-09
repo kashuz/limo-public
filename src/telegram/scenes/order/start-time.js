@@ -1,4 +1,3 @@
-import r from 'ramda';
 import b from 'bluebird';
 import { Scene } from 'telegraf-flow';
 import action from '../../action';
@@ -10,21 +9,22 @@ const scene = new Scene('order.start-time');
 scene.enter(ctx => reply(ctx, 'Please choose start time', clock()));
 
 scene.action(/time\.(\d+:\d+)/, ctx =>
-  ctx
-    .answerCallbackQuery()
-    .then(() =>
-      b.all([
-        remove(ctx),
-        ctx.flow.enter(
-          'order.finish-time',
-          r.merge(ctx.flow.state, { start: ctx.match[1] }),
-        ),
-      ]),
-    ),
+  ctx.answerCallbackQuery().then(() =>
+    b.all([
+      remove(ctx),
+      ctx.flow.enter('order.finish-time', {
+        order: ctx.flow.state.order,
+        start: ctx.match[1],
+      }),
+    ]),
+  ),
 );
 
 scene.action('cancel', ctx =>
-  b.all([reset(ctx), ctx.flow.enter('order.create', ctx.flow.state)]),
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.create', { order: ctx.flow.state.order }),
+  ]),
 );
 
 scene.action('noop', ctx =>

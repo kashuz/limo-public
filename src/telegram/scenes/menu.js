@@ -26,7 +26,7 @@ scene.enter(ctx => reply(ctx, 'Menu', keyboard));
 scene.action('order', ctx =>
   create(ctx.user.id)
     .tap(() => remove(ctx))
-    .then(order => ctx.flow.enter('order.create', order)),
+    .then(order => ctx.flow.enter('order.create', { order })),
 );
 
 scene.action(/(.+)/, ctx =>

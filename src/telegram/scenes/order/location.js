@@ -13,13 +13,12 @@ const keyboard = extra.markup(m =>
   m.inlineKeyboard([m.callbackButton('⬅ Back', `cancel`)]),
 );
 
-function update(id) {
-  return location =>
-    db('order')
-      .update({ location })
-      .where({ id })
-      .returning('*')
-      .then(r.head);
+function update(id, location) {
+  return db('order')
+    .update({ location })
+    .where({ id })
+    .returning('*')
+    .then(r.head);
 }
 
 function pin(ctx, location) {
@@ -29,20 +28,25 @@ function pin(ctx, location) {
 }
 
 scene.enter(ctx =>
-  pin(ctx, ctx.flow.state.location).then(() =>
+  pin(ctx, ctx.flow.state.order.location).then(() =>
     reply(ctx, 'Please send location', keyboard),
   ),
 );
 
 scene.action('cancel', ctx =>
-  b.all([reset(ctx), ctx.flow.enter('order.create', ctx.flow.state)]),
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.create', { order: ctx.flow.state.order }),
+  ]),
 );
 
 scene.on('location', ctx =>
   enabled(ctx.message.location)
-    .then(update(ctx.flow.state.id))
+    .then(location => update(ctx.flow.state.order.id, location))
     .tap(() => ctx.reply('✅ Location saved'))
-    .then(order => b.all([reset(ctx), ctx.flow.enter('order.create', order)]))
+    .then(order =>
+      b.all([reset(ctx), ctx.flow.enter('order.create', { order })]),
+    )
     .catch(() =>
       reply(
         ctx,

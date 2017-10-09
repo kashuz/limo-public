@@ -33,22 +33,34 @@ Order <b>#${o.id}</b>
 📝 ${o.note || 'Notes: <i> no set</i>'}`;
 }
 
-scene.enter(ctx => reply(ctx, format(ctx.flow.state), keyboard));
+scene.enter(ctx => reply(ctx, format(ctx.flow.state.order), keyboard));
 
 scene.action('location', ctx =>
-  b.all([reset(ctx), ctx.flow.enter('order.location', ctx.flow.state)]),
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.location', { order: ctx.flow.state.order }),
+  ]),
 );
 
 scene.action('date', ctx =>
-  b.all([reset(ctx), ctx.flow.enter('order.date', ctx.flow.state)]),
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.date', { order: ctx.flow.state.order }),
+  ]),
 );
 
 scene.action('time', ctx =>
-  b.all([reset(ctx), ctx.flow.enter('order.start-time', ctx.flow.state)]),
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.start-time', { order: ctx.flow.state.order }),
+  ]),
 );
 
 scene.action('note', ctx =>
-  b.all([reset(ctx), ctx.flow.enter('order.note', ctx.flow.state)]),
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.note', { order: ctx.flow.state.order }),
+  ]),
 );
 
 scene.action('cancel', ctx =>
@@ -62,7 +74,7 @@ scene.action(/(.+)/, ctx =>
 );
 
 scene.use((ctx, next) =>
-  reply(ctx, format(ctx.flow.state), keyboard).then(next),
+  reply(ctx, format(ctx.flow.state.order), keyboard).then(next),
 );
 
 export default scene;
