@@ -10,7 +10,6 @@ import calendar from '../../keyboards/calendar';
 const { reply, reset } = action('scene.date.location.message');
 const scene = new Scene('order.date');
 
-// eslint-disable-next-line no-shadow
 function update(id, date) {
   return db('order')
     .update({ date })

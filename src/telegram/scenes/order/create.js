@@ -1,5 +1,6 @@
 import b from 'bluebird';
 import { Scene } from 'telegraf-flow';
+import db from '../../../db';
 import action from '../../action';
 import vertical from '../../keyboards/vertical';
 import { format as address } from '../../../util/geo';
@@ -26,19 +27,40 @@ function format(o) {
   return `
 Order <b>#${o.id}</b>
 📍 ${o.location ? address(o.location) : 'Location: <i> not set</i>'}
+🚘 ${o.category
+    ? `${o.car || 'Random car'} from class ${o.category}`
+    : 'Car: <i> no set</i>'}
 🗓 ${o.date ? `${date(o.date)}` : 'Date: <i> not set</i>'}
 ⏰ ${o.start_time
     ? `${o.start_time} - ${o.finish_time}, ${hours(o)} hour(s)`
     : 'Time: <i> not set</i>'}
-📝 ${o.note || 'Notes: <i> no set</i>'}`;
+📝 ${o.note || 'Notes: <i> no set</i>'}
+`;
 }
 
-scene.enter(ctx => reply(ctx, format(ctx.flow.state.order), keyboard));
+function join(order) {
+  return db('order')
+    .where({ 'order.id': order.id })
+    .leftJoin('car', 'car.id', 'order.car_id')
+    .leftJoin('category', 'category.id', 'order.category_id')
+    .first('order.*', 'car.name as car', 'category.name as category');
+}
+
+scene.enter(ctx =>
+  join(ctx.flow.state.order).then(order => reply(ctx, format(order), keyboard)),
+);
 
 scene.action('location', ctx =>
   b.all([
     reset(ctx),
     ctx.flow.enter('order.location', { order: ctx.flow.state.order }),
+  ]),
+);
+
+scene.action('car', ctx =>
+  b.all([
+    reset(ctx),
+    ctx.flow.enter('order.car', { order: ctx.flow.state.order }),
   ]),
 );
 
@@ -74,7 +96,9 @@ scene.action(/(.+)/, ctx =>
 );
 
 scene.use((ctx, next) =>
-  reply(ctx, format(ctx.flow.state.order), keyboard).then(next),
+  join(ctx.flow.state.order)
+    .then(order => reply(ctx, format(order), keyboard))
+    .then(next),
 );
 
 export default scene;

@@ -4,7 +4,7 @@ import { Extra as extra } from 'telegraf';
 function remove(key, ctx) {
   return new Promise(resolve => {
     if (ctx.session[key])
-      ctx.tg
+      ctx.telegram
         .deleteMessage(ctx.user.id, ctx.session[key])
         .then(resolve, resolve);
 
