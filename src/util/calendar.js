@@ -15,8 +15,6 @@ export function calendar([year, month]) {
 export function neighbours([year, month]) {
   const prev = m({ year, month: month - 1 }).subtract(1, 'months');
   const next = m({ year, month: month - 1 }).add(1, 'months');
-  // eslint-disable-next-line
-  debugger;
   return {
     prev: prev.date(2).isBefore(m().date(1))
       ? undefined
@@ -25,8 +23,8 @@ export function neighbours([year, month]) {
   };
 }
 
-export function init(date = undefined) {
-  return [m(date).year(), m(date).month() + 1];
+export function init(date) {
+  return [m(date || undefined).year(), m(date || undefined).month() + 1];
 }
 
 export function format([year, month]) {

@@ -32,9 +32,7 @@ scene.action(/month\.(\d+)\.(\d+)/, ctx =>
 scene.action(/day\.(\d+)\.(\d+)\.(\d+)/, ctx =>
   update(ctx.flow.state.id, date(ctx.match[1], ctx.match[2], ctx.match[3]))
     .tap(() => ctx.reply('✅ Date saved'))
-    .then(order =>
-      b.all([reset(ctx), ctx.flow.enter('order.start-time', order)]),
-    ),
+    .then(order => b.all([reset(ctx), ctx.flow.enter('order.create', order)])),
 );
 
 scene.action('noop', ctx => ctx.answerCallbackQuery('Please choose date'));

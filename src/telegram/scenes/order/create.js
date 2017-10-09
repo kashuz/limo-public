@@ -11,20 +11,26 @@ const scene = new Scene('order.create');
 const keyboard = vertical({
   '📍 Location': `location`,
   '🚗 Car': `car`,
-  '🗓 Date and time': `datetime`,
+  '🗓 Date': `date`,
+  '⏰ Time': `time`,
   '📝 Notes': `note`,
   '💳 Payment method': `payment`,
   '❌ Cancel': `cancel`,
-});
+}).HTML();
 
-function format(order) {
+function hours(o) {
+  return o.finish_time.split(':')[0] - o.start_time.split(':')[0];
+}
+
+function format(o) {
   return `
-Order #${order.id}
-📍 ${order.location ? address(order.location) : 'Location not set'}
-🗓 ${order.date
-    ? `${date(order.date)} (${order.start_time} - ${order.finish_time})`
-    : 'Date not set'}
-`;
+Order <b>#${o.id}</b>
+📍 ${o.location ? address(o.location) : 'Location: <i> not set</i>'}
+🗓 ${o.date ? `${date(o.date)}` : 'Date: <i> not set</i>'}
+⏰ ${o.start_time
+    ? `${o.start_time} - ${o.finish_time}, ${hours(o)} hour(s)`
+    : 'Time: <i> not set</i>'}
+📝 ${o.note || 'Notes: <i> no set</i>'}`;
 }
 
 scene.enter(ctx => reply(ctx, format(ctx.flow.state), keyboard));
@@ -33,8 +39,16 @@ scene.action('location', ctx =>
   b.all([reset(ctx), ctx.flow.enter('order.location', ctx.flow.state)]),
 );
 
-scene.action('datetime', ctx =>
+scene.action('date', ctx =>
   b.all([reset(ctx), ctx.flow.enter('order.date', ctx.flow.state)]),
+);
+
+scene.action('time', ctx =>
+  b.all([reset(ctx), ctx.flow.enter('order.start-time', ctx.flow.state)]),
+);
+
+scene.action('note', ctx =>
+  b.all([reset(ctx), ctx.flow.enter('order.note', ctx.flow.state)]),
 );
 
 scene.action('cancel', ctx =>

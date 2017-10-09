@@ -8,6 +8,7 @@ import orderLocation from '../scenes/order/location';
 import orderDate from '../scenes/order/date';
 import orderStartTime from '../scenes/order/start-time';
 import orderFinishTime from '../scenes/order/finish-time';
+import orderNote from '../scenes/order/note';
 
 const flow = new TelegrafFlow();
 flow.register(menu);
@@ -19,5 +20,6 @@ flow.register(orderLocation);
 flow.register(orderDate);
 flow.register(orderStartTime);
 flow.register(orderFinishTime);
+flow.register(orderNote);
 
 export default flow;
