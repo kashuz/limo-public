@@ -1,9 +1,8 @@
 import b from 'bluebird';
-import r from 'ramda';
 import {Scene} from 'telegraf-flow';
 import geo from '../../../util/geo';
-import db from '../../../db';
 import action from '../../action';
+import update from '../../../sql/update-order';
 
 const {reply, reset} = action('scene.order.location.message');
 const scene = new Scene('order.location');
@@ -11,14 +10,6 @@ const scene = new Scene('order.location');
 const extra = {
   reply_markup: {
     inline_keyboard: [[{text: '⬅ Back', callback_data: 'cancel'}]]}};
-
-function update(id, location) {
-  return db('order')
-    .update({location})
-    .where({id})
-    .returning('*')
-    .then(r.head);
-}
 
 function pin(ctx, location) {
   return location
@@ -36,7 +27,7 @@ scene.action('cancel', ctx => b.all([
 
 scene.on('location', ctx =>
   geo(ctx.message.location)
-    .then(location => update(ctx.flow.state.order.id, location))
+    .then(location => update(ctx.flow.state.order.id, {location}))
     .tap(() => ctx.reply('✅ Location saved'))
     .then(order => b.all([
       reset(ctx),

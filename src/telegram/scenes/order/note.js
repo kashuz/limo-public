@@ -1,8 +1,8 @@
 import b from 'bluebird';
 import r from 'ramda';
 import {Scene} from 'telegraf-flow';
-import db from '../../../db';
 import action from '../../action';
+import update from '../../../sql/update-order';
 
 const {reply, reset} = action('scene.order.note.message');
 const scene = new Scene('order.note');
@@ -16,14 +16,6 @@ function extra(order) {
         [{text: '⬅ Back', callback_data: 'cancel'}]])}};
 }
 
-function update(id, note) {
-  return db('order')
-    .update({note})
-    .where({id})
-    .returning('*')
-    .then(r.head);
-}
-
 scene.enter(ctx =>
   reply(ctx, 'Please send notes', extra(ctx.flow.state.order)));
 
@@ -32,14 +24,14 @@ scene.action('cancel', ctx => b.all([
   ctx.flow.enter('order.create', {order: ctx.flow.state.order})]));
 
 scene.on('text', ctx =>
-  update(ctx.flow.state.order.id, ctx.message.text)
+  update(ctx.flow.state.order.id, {note: ctx.message.text})
     .tap(() => ctx.reply('✅ Notes saved'))
     .then(order => b.all([
       reset(ctx),
       ctx.flow.enter('order.create', {order})])));
 
 scene.action('clear', ctx =>
-  update(ctx.flow.state.order.id, null)
+  update(ctx.flow.state.order.id, {note: null})
     .tap(() => ctx.reply('✅ Notes cleared'))
     .then(order => b.all([
       reset(ctx),

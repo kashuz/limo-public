@@ -1,10 +1,9 @@
 import b from 'bluebird';
-import r from 'ramda';
 import {Scene} from 'telegraf-flow';
-import db from '../../../db';
 import action from '../../action';
 import {format as address} from '../../../util/geo';
 import {format as date} from '../../../util/date';
+import update from '../../../sql/update-order';
 
 const {reply, reset} = action('scene.order.create.message');
 const scene = new Scene('order.create');
@@ -38,17 +37,8 @@ function format(o) {
     (o.note ? `\n\nNotes: <i>${o.note}</i>` : '');
 }
 
-function join(order) {
-  return db('order')
-    .where({'order.id': order.id})
-    .leftJoin('car', 'car.id', 'order.car_id')
-    .leftJoin('category', 'category.id', 'order.category_id')
-    .first('order.*', 'car.name as car', 'category.name as category');
-}
-
 scene.enter(ctx =>
-  join(ctx.flow.state.order).then(order =>
-    reply(ctx, format(order), extra(order))));
+  reply(ctx, format(ctx.flow.state.order), extra(ctx.flow.state.order)));
 
 scene.action(/(location|car|date|start-time|note)/, ctx => b.all([
   ctx.deleteMessage(),
@@ -59,18 +49,12 @@ scene.action('cancel', ctx => ctx
   .then(() => b.all([reset(ctx), ctx.flow.enter('menu')])));
 
 scene.action(/payment\.(payme|cash)/, ctx =>
-  db('order')
-    .update({payment: ctx.match[1]})
-    .where({id: ctx.flow.state.order.id})
-    .returning('*')
-    .then(r.head)
+  update(ctx.flow.state.order.id, {payment: ctx.match[1]})
     .then(order => ctx.flow.state.order = order)
-    .then(join)
     .then(order => ctx.editMessageText(format(order), extra(order))));
 
 scene.use((ctx, next) =>
-  join(ctx.flow.state.order)
-    .then(order => reply(ctx, format(order), extra(order)))
+  reply(ctx, format(ctx.flow.state.order), extra(ctx.flow.state.order))
     .then(() => next()));
 
 export default scene;

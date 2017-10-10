@@ -4,24 +4,19 @@ import {Scene} from 'telegraf-flow';
 import db from '../../../db';
 import action from '../../action';
 import clock from '../../keyboards/clock';
+import update from '../../../sql/update-order';
 
 const {reply, reset} = action('scene.order.finish-time.message');
 const scene = new Scene('order.finish-time');
-
-function update(id, start, finish) {
-  return db('order')
-    .update({start_time: start, finish_time: finish})
-    .where({id})
-    .returning('*')
-    .then(r.head);
-}
 
 scene.enter(ctx =>
   reply(ctx, 'Please choose end time', clock(ctx.flow.state.start)));
 
 scene.action(/time\.(\d+:\d+)/, ctx =>
   ctx.answerCallbackQuery()
-    .then(() => update(ctx.flow.state.order.id, ctx.flow.state.start, ctx.match[1]))
+    .then(() => update(ctx.flow.state.order.id, {
+      start_time: ctx.flow.state.start,
+      finish_time: ctx.match[1]}))
     .tap(() => ctx.reply('✅ Time saved'))
     .then(order => b.all([reset(ctx), ctx.flow.enter('order.create', {order})])));
 
