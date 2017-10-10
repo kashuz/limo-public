@@ -4,6 +4,7 @@ module.exports = {
   plugins: ["flowtype", "prettier"],
   rules: {
     "no-shadow": "off",
+    "no-return-assign": "off",
     "prettier/prettier": [
       "error",
       {
