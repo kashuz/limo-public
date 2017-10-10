@@ -1,16 +1,24 @@
 import b from 'bluebird';
 import r from 'ramda';
 import { Scene } from 'telegraf-flow';
-import { Extra as extra } from 'telegraf';
 import db from '../../../db';
 import action from '../../action';
 
 const { reply, reset } = action('scene.order.note.message');
 const scene = new Scene('order.note');
 
-const keyboard = extra.markup(m =>
-  m.inlineKeyboard([m.callbackButton('⬅ Back', `cancel`)]),
-);
+const compact = r.filter(r.identity);
+
+function extra(order) {
+  return {
+    reply_markup: {
+      inline_keyboard: compact([
+        order.note && [{ text: '❌ Remove notes', callback_data: 'clear' }],
+        [{ text: '⬅ Back', callback_data: 'cancel' }],
+      ]),
+    },
+  };
+}
 
 function update(id, note) {
   return db('order')
@@ -20,7 +28,9 @@ function update(id, note) {
     .then(r.head);
 }
 
-scene.enter(ctx => reply(ctx, 'Please send notes', keyboard));
+scene.enter(ctx =>
+  reply(ctx, 'Please send notes', extra(ctx.flow.state.order)),
+);
 
 scene.action('cancel', ctx =>
   b.all([
@@ -37,6 +47,16 @@ scene.on('text', ctx =>
     ),
 );
 
-scene.use((ctx, next) => reply(ctx, 'Please send notes', keyboard).then(next));
+scene.action('clear', ctx =>
+  update(ctx.flow.state.order.id, null)
+    .tap(() => ctx.reply('✅ Notes cleared'))
+    .then(order =>
+      b.all([reset(ctx), ctx.flow.enter('order.create', { order })]),
+    ),
+);
+
+scene.use((ctx, next) =>
+  reply(ctx, 'Please send notes', extra(ctx.flow.state.order)).then(next),
+);
 
 export default scene;
