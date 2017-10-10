@@ -42,7 +42,7 @@ function extra(categories, cars, category, position, prev, next) {
          {text: '▶️', callback_data: `skip.${category}.${cars[next].id}`}],
         [{text: '🎲 Random', callback_data: `random.${category}`}],
         categories.map(c => ({
-          text: category === c.id ? `✅ ${c.name}` : c.name,
+          text: (category === c.id ? '◼️ ' : '◻️ ') + c.name,
           callback_data: `category.${c.id}`})),
         [{text: '⬅ Back', callback_data: `cancel`}]]}};
 }
@@ -68,7 +68,7 @@ function intro(ctx) {
     ctx.reply('Please select class', {
       reply_markup: {
         inline_keyboard: [
-          categories.map(c => ({text: c.name, callback_data: `category.${c.id}`})),
+          categories.map(c => ({text: '◻️ ' + c.name, callback_data: `category.${c.id}`})),
           [{text: '⬅ Back', callback_data: `cancel`}]]}}));
 }
 
