@@ -4,23 +4,35 @@ import action from '../../action';
 import {format as address} from '../../../util/geo';
 import {format as date} from '../../../util/date';
 import update from '../../../sql/update-order';
+import compact from '../../../util/compact';
 
 const {reply, reset} = action('scene.order.create.message');
 const scene = new Scene('order.create');
 
-function extra(order) {
+function ready(o) {
+  return o.location &&
+         o.category_id &&
+         o.date &&
+         o.start_time &&
+         o.finish_time &&
+         o.payment;
+}
+
+function extra(o) {
   return {
     parse_mode: 'html',
     reply_markup: {
-      inline_keyboard: [
+      inline_keyboard: compact([
+        ready(o) &&
+          [{text: '🚀 Submit', callback_data: 'submit'}],
         [{text: '📍 Location', callback_data: 'location'}],
         [{text: '🚗 Car', callback_data: 'car'}],
         [{text: '🗓 Date', callback_data: 'date'},
          {text: '⏰ Time', callback_data: 'start-time'}],
-        [{text: `${order.payment === 'payme' ? '◼️' : '◻️'} Payme`, callback_data: 'payment.payme'},
-         {text: `${order.payment === 'cash' ? '◼️' : '◻️'} Cash`, callback_data: 'payment.cash'}],
+        [{text: `${o.payment === 'payme' ? '◼️' : '◻️'} Payme`, callback_data: 'payment.payme'},
+         {text: `${o.payment === 'cash' ? '◼️' : '◻️'} Cash`, callback_data: 'payment.cash'}],
         [{text: '📝 Notes', callback_data: 'note'}],
-        [{text: '❌ Cancel', callback_data: 'cancel'}]]}};
+        [{text: '❌ Cancel', callback_data: 'cancel'}]])}};
 }
 
 const props = [

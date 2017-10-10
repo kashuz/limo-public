@@ -1,8 +1,8 @@
 import b from 'bluebird';
-import r from 'ramda';
 import {Scene} from 'telegraf-flow';
 import action from '../../action';
 import update from '../../../sql/update-order';
+import compact from '../../../util/compact';
 
 const {reply, reset} = action('scene.order.note.message');
 const scene = new Scene('order.note');
@@ -10,7 +10,7 @@ const scene = new Scene('order.note');
 function extra(order) {
   return {
     reply_markup: {
-      inline_keyboard: r.filter(r.identity, [
+      inline_keyboard: compact([
         order.note &&
           [{text: '❌ Remove notes', callback_data: 'clear'}],
         [{text: '⬅ Back', callback_data: 'cancel'}]])}};
