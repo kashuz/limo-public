@@ -44,14 +44,17 @@ scene.action(/(location|car|date|start-time|note)/, ctx => b.all([
   ctx.deleteMessage(),
   ctx.flow.enter(`order.${ctx.match[1]}`, {order: ctx.flow.state.order})]));
 
-scene.action('cancel', ctx => ctx
-  .reply('Order cancelled')
-  .then(() => b.all([reset(ctx), ctx.flow.enter('menu')])));
-
 scene.action(/payment\.(payme|cash)/, ctx =>
   update(ctx.flow.state.order.id, {payment: ctx.match[1]})
     .then(order => ctx.flow.state.order = order)
     .then(order => ctx.editMessageText(format(order), extra(order))));
+
+scene.action('cancel', ctx =>
+  update(ctx.flow.state.order.id, {status: 'cancelled'})
+    .then(() => ctx.reply('Order cancelled'))
+    .then(() => b.all([
+      reset(ctx),
+      ctx.flow.enter('menu')])));
 
 scene.use((ctx, next) =>
   reply(ctx, format(ctx.flow.state.order), extra(ctx.flow.state.order))

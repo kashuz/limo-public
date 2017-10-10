@@ -7,6 +7,7 @@ export default function (fields) {
     .insert({
       create_time: new Date(),
       update_time: new Date(),
+      status: 'created',
       ...fields})
     .returning('id')
     .then(r.head)
