@@ -2,8 +2,6 @@ import r from 'ramda';
 import db from '../../db';
 
 export default function(ctx, next) {
-  const { id, first_name, last_name, username, language_code } = ctx.from;
-
   return db
     .raw(
       `insert into "user" (id, first_name, last_name, username, language_code)
@@ -13,26 +11,14 @@ export default function(ctx, next) {
          last_name = :last_name,
          username = :username
        returning *`,
-      { id, first_name, last_name, username, language_code },
-    )
-    .then(({ rows }) => {
-      let session = rows[0].session || {};
-
-      Object.defineProperty(ctx, 'user', {
-        get: r.always(r.omit(['session'], rows[0])),
-      });
-
-      Object.defineProperty(ctx, 'session', {
-        get: () => session,
-        set: value => {
-          session = { ...value };
-        },
-      });
-
-      return next().then(() =>
-        db('user')
-          .update({ session })
-          .where({ id }),
-      );
-    });
+      r.pick(['id', 'first_name', 'last_name', 'username', 'language_code'], ctx.from))
+    .then(r.prop('rows'))
+    .then(r.head)
+    .then(({session, ...user}) => {
+      ctx.user = user;
+      ctx.session = session || {}})
+    .then(() => next())
+    .then(() => db('user')
+      .update({ session: ctx.session })
+      .where({ id: ctx.user.id }));
 }

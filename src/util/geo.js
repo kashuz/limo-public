@@ -1,37 +1,26 @@
+import b from 'bluebird';
 import create from 'node-geocoder';
 import r from 'ramda';
 
-const geocoder = create({
+const coder = create({
   provider: 'google',
-  apiKey: process.env.GOOGLE_MAPS_API_KEY,
-});
+  apiKey: process.env.GOOGLE_MAPS_API_KEY});
+
+const enabled = r.contains(r.__,
+  r.split(',', process.env.ENABLED_CITIES));
 
 export default function geo(location) {
-  return geocoder
-    .reverse({
-      lat: location.latitude,
-      lon: location.longitude,
-    })
+  return coder
+    .reverse({lat: location.latitude, lon: location.longitude})
     .then(r.head)
-    .then(result => r.merge(result, location));
-}
-
-export function enabled(location) {
-  return geo(location).then(
-    result =>
-      process.env.ENABLED_CITIES.split(',').includes(result.city)
-        ? result
-        : Promise.reject(),
-  );
+    .then(r.merge(r.__, location))
+    .then(result => enabled(result.city) ? result : b.reject());
 }
 
 export function format(location) {
-  return r.join(
-    ', ',
+  return r.join(', ',
     r.filter(r.identity, [
       location.extra && location.extra.neighborhood,
       location.streetName,
-      location.streetNumber,
-    ]),
-  );
+      location.streetNumber]));
 }

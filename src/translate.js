@@ -4,6 +4,6 @@ import db from './db';
 export default function(user, id) {
   return db('translation')
     .first('text')
-    .where({ id })
+    .where({id})
     .then(r.prop('text'));
 }
