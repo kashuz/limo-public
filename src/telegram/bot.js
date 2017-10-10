@@ -1,5 +1,3 @@
-// @flow
-
 import Telegraf from 'telegraf';
 import r from 'ramda';
 import logger from './middlewares/logger';
