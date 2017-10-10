@@ -1,20 +1,26 @@
 import b from 'bluebird';
 import { Scene } from 'telegraf-flow';
-import { Extra as extra } from 'telegraf';
 import translate from '../../translate';
 import action from '../action';
 
 const { reply, reset } = action('scene.agreement.message');
 const scene = new Scene('agreement');
 
-const keyboard = extra.markup(m =>
-  m.inlineKeyboard([
-    m.callbackButton('✅ I accept terms and conditions', 'agreement.yes'),
-  ]),
-);
+const extra = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        {
+          text: '✅ I accept terms and conditions',
+          callback_data: 'agreement.yes',
+        },
+      ],
+    ],
+  },
+};
 
 scene.enter(ctx =>
-  translate(ctx.user, 'agreement').then(text => reply(ctx, text, keyboard)),
+  translate(ctx.user, 'agreement').then(text => reply(ctx, text, extra)),
 );
 
 scene.action('agreement.yes', ctx =>
@@ -25,7 +31,7 @@ scene.action('agreement.yes', ctx =>
 
 scene.use((ctx, next) =>
   translate(ctx.user, 'agreement')
-    .then(text => reply(ctx, text, keyboard))
+    .then(text => reply(ctx, text, extra))
     .then(next),
 );
 

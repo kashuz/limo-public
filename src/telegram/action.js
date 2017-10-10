@@ -1,5 +1,4 @@
 import r from 'ramda';
-import { Extra as extra } from 'telegraf';
 
 function remove(key, ctx) {
   return new Promise(resolve => {
@@ -16,20 +15,18 @@ function reset(key, ctx) {
   return new Promise(resolve => {
     if (ctx.session[key])
       ctx.tg
-        .editMessageReplyMarkup(
-          ctx.user.id,
-          ctx.session[key],
-          extra.markup(m => m.removeKeyboard()),
-        )
+        .editMessageReplyMarkup(ctx.user.id, ctx.session[key], {
+          reply_markup: { remove_keyboard: true },
+        })
         .then(resolve, resolve);
 
     resolve();
   });
 }
 
-function reply(key, ctx, text, keyboard) {
+function reply(key, ctx, text, extra) {
   return reset(key, ctx)
-    .then(() => ctx.reply(text, keyboard))
+    .then(() => ctx.reply(text, extra))
     .then(result => {
       ctx.session[key] = result.message_id;
     });

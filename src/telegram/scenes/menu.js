@@ -2,17 +2,20 @@ import r from 'ramda';
 import { Scene } from 'telegraf-flow';
 import db from '../../db';
 import action from '../action';
-import vertical from '../keyboards/vertical';
 
 const { reply, remove } = action('scene.menu.message');
 const scene = new Scene('menu');
 
-const keyboard = vertical({
-  '🚘 New order': 'order',
-  '🏷 Plans': 'plans',
-  '📔 My orders': 'history',
-  '☎️ Change phone': 'phone-number',
-});
+const extra = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: '🚘 New order', callback_data: 'order' }],
+      [{ text: '🏷 Plans', callback_data: 'plans' }],
+      [{ text: '📔 My orders', callback_data: 'history' }],
+      [{ text: '☎️ Change phone', callback_data: 'phone-number' }],
+    ],
+  },
+};
 
 function create(user) {
   return db('order')
@@ -21,7 +24,7 @@ function create(user) {
     .then(r.head);
 }
 
-scene.enter(ctx => reply(ctx, 'Menu', keyboard));
+scene.enter(ctx => reply(ctx, 'Menu', extra));
 
 scene.action('order', ctx =>
   create(ctx.user.id)
@@ -33,6 +36,6 @@ scene.action(/(.+)/, ctx =>
   ctx.answerCallbackQuery(`Not implemented ${ctx.match[1]}`),
 );
 
-scene.use((ctx, next) => reply(ctx, `Menu`, keyboard).then(next));
+scene.use((ctx, next) => reply(ctx, `Menu`, extra).then(next));
 
 export default scene;

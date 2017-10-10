@@ -1,7 +1,6 @@
 import b from 'bluebird';
 import r from 'ramda';
 import { Scene } from 'telegraf-flow';
-import { Extra as extra } from 'telegraf';
 import { enabled } from '../../../util/geo';
 import db from '../../../db';
 import action from '../../action';
@@ -9,9 +8,11 @@ import action from '../../action';
 const { reply, reset } = action('scene.order.location.message');
 const scene = new Scene('order.location');
 
-const keyboard = extra.markup(m =>
-  m.inlineKeyboard([m.callbackButton('⬅ Back', `cancel`)]),
-);
+const extra = {
+  reply_markup: {
+    inline_keyboard: [[{ text: '⬅ Back', callback_data: 'cancel' }]],
+  },
+};
 
 function update(id, location) {
   return db('order')
@@ -29,7 +30,7 @@ function pin(ctx, location) {
 
 scene.enter(ctx =>
   pin(ctx, ctx.flow.state.order.location).then(() =>
-    reply(ctx, 'Please send location', keyboard),
+    reply(ctx, 'Please send location', extra),
   ),
 );
 
@@ -51,13 +52,11 @@ scene.on('location', ctx =>
       reply(
         ctx,
         'This location is not supported. Please send another location',
-        keyboard,
+        extra,
       ),
     ),
 );
 
-scene.use((ctx, next) =>
-  reply(ctx, 'Please send location', keyboard).then(next),
-);
+scene.use((ctx, next) => reply(ctx, 'Please send location', extra).then(next));
 
 export default scene;

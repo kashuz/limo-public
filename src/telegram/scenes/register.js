@@ -1,15 +1,22 @@
 import { Scene } from 'telegraf-flow';
-import { Extra as extra } from 'telegraf';
 import db from '../../db';
-import empty from '../keyboards/empty';
 
 const scene = new Scene('register');
 
-const keyboard = extra.markup(m =>
-  m.resize().keyboard([m.contactRequestButton('☎️ Send phone number')]),
-);
+const extra = {
+  reply_markup: {
+    resize_keyboard: true,
+    keyboard: [[{ text: '☎️ Send phone number', request_contact: true }]],
+  },
+};
 
-scene.enter(ctx => ctx.reply('Please send your phone number', keyboard));
+const empty = {
+  reply_markup: {
+    remove_keyboard: true,
+  },
+};
+
+scene.enter(ctx => ctx.reply('Please send your phone number', extra));
 
 function update(id, phone) {
   return db('user')
@@ -24,7 +31,7 @@ scene.on('contact', ctx =>
 );
 
 scene.use((ctx, next) =>
-  ctx.reply('Please send your phone number', keyboard).then(next),
+  ctx.reply('Please send your phone number', extra).then(next),
 );
 
 export default scene;
