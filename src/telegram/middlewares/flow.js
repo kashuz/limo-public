@@ -1,27 +1,10 @@
-import TelegrafFlow from 'telegraf-flow';
-import register from '../scenes/register';
-import menu from '../scenes/menu';
-import agreement from '../scenes/agreement';
-import plans from '../scenes/plans';
-import orderCreate from '../scenes/order/create';
-import orderLocation from '../scenes/order/location';
-import orderCar from '../scenes/order/car';
-import orderDate from '../scenes/order/date';
-import orderStartTime from '../scenes/order/start-time';
-import orderFinishTime from '../scenes/order/finish-time';
-import orderNote from '../scenes/order/note';
+import glob from 'glob';
+import path from 'path';
+import Flow from 'telegraf-flow';
 
-const flow = new TelegrafFlow();
-flow.register(menu);
-flow.register(register);
-flow.register(agreement);
-flow.register(plans);
-flow.register(orderCreate);
-flow.register(orderLocation);
-flow.register(orderCar);
-flow.register(orderDate);
-flow.register(orderStartTime);
-flow.register(orderFinishTime);
-flow.register(orderNote);
+const flow = new Flow();
+
+glob.sync(__dirname + '/../scenes/**/*.js').forEach(
+  file => flow.register(require(path.resolve(file)).default));
 
 export default flow;
