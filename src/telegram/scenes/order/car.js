@@ -51,7 +51,7 @@ function show(ctx, category, car) {
   return b
     .all([categories(), cars(category)])
     .then(([categories, cars]) => b.all([
-      ctx.deleteMessage(),
+      ctx.deleteMessage().catch(() => {}),
       ctx.replyWithPhoto(
         cars[find(cars, car)].photo,
         extra(

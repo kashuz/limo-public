@@ -53,7 +53,7 @@ scene.enter(ctx =>
   reply(ctx, format(ctx.flow.state.order), extra(ctx.flow.state.order)));
 
 scene.action(/(location|car|date|start-time|note)/, ctx => b.all([
-  ctx.deleteMessage(),
+  ctx.deleteMessage().catch(() => {}),
   ctx.flow.enter(`order.${ctx.match[1]}`, {order: ctx.flow.state.order})]));
 
 scene.action(/payment\.(payme|cash)/, ctx =>
