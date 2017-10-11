@@ -36,6 +36,7 @@
     "nodemon": "^1.12.1"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node -- ./index.js"
+    "start": "nodemon --exec babel-node -- ./index.js",
+    "db": "node tools/db"
   }
 }

@@ -1,4 +1,4 @@
-import knex from 'knex';
+const knex = require('knex');
 
 const db = knex({
   client: 'pg',
@@ -6,4 +6,4 @@ const db = knex({
   migrations: {tableName: 'migrations'},
   debug: process.env.DATABASE_DEBUG === 'true'});
 
-export default db;
+module.exports = db;
