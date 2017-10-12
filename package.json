@@ -20,13 +20,16 @@
     "ramda": "^0.24.1",
     "ramdasauce": "^2.1.0",
     "redis": "^2.8.0",
+    "source-map-support": "^0.5.0",
     "telegraf": "^3.12.1",
     "telegraf-flow": "^8.3.0",
-    "telegraf-logger": "^1.0.3"
+    "telegraf-logger": "^1.0.3",
+    "telegraf-ratelimit": "^1.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
+    "babel-plugin-source-map-support": "^1.0.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -35,10 +38,16 @@
     "babel-register": "^6.26.0",
     "chokidar": "^1.7.0",
     "del": "3.0.0",
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.12.1",
+    "shipit-cli": "^3.0.0",
+    "shipit-deploy": "^2.5.1",
+    "shipit-shared": "^4.4.2",
+    "shipit-utils": "^1.4.0"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node -- ./index.js",
-    "db": "node tools/db"
+    "start": "nodemon --exec babel-node -- ./src/index.js",
+    "build": "babel src --out-dir build --source-maps inline --plugins source-map-support",
+    "db": "node tools/db",
+    "deploy": "shipit production deploy"
   }
 }
