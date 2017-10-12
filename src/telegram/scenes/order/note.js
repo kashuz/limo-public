@@ -25,14 +25,14 @@ scene.action('cancel', ctx => b.all([
 
 scene.on('text', ctx =>
   update(ctx.flow.state.order.id, {note: ctx.message.text})
-    .tap(() => ctx.reply('✅ Notes saved'))
+    .tap(() => ctx.answerCallbackQuery('Notes saved'))
     .then(order => b.all([
       reset(ctx),
       ctx.flow.enter('order.create', {order})])));
 
 scene.action('clear', ctx =>
   update(ctx.flow.state.order.id, {note: null})
-    .tap(() => ctx.reply('✅ Notes cleared'))
+    .tap(() => ctx.answerCallbackQuery('Notes cleared'))
     .then(order => b.all([
       reset(ctx),
       ctx.flow.enter('order.create', {order})])));

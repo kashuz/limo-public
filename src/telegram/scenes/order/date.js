@@ -18,7 +18,7 @@ scene.action(/month\.(\d+)\.(\d+)/, ctx => ctx
 
 scene.action(/day\.(\d+)\.(\d+)\.(\d+)/, ctx =>
   update(ctx.flow.state.order.id, {date: date(ctx.match[1], ctx.match[2], ctx.match[3])})
-    .tap(() => ctx.reply('✅ Date saved'))
+    .tap(() => ctx.answerCallbackQuery('Date saved'))
     .then(order => b.all([
       reset(ctx),
       ctx.flow.enter('order.create', {order})])));
