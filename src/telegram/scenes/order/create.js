@@ -2,18 +2,18 @@ import b from 'bluebird';
 import {Scene} from 'telegraf-flow';
 import action from '../../action';
 import update from '../../../sql/update-order';
-import message from '../../message/order-create';
+import message from '../../messages/order-create';
 import extra from '../../keyboards/order-create';
 import {submit} from '../../middlewares/group';
 
-const {reply, reset} = action('scene.order.create.message');
+const {reply, reset, remove} = action('scene.order.create.message');
 const scene = new Scene('order.create');
 
 scene.enter(ctx =>
   reply(ctx, message(ctx.flow.state.order), extra(ctx.flow.state.order)));
 
 scene.action(/(location|car|date|start-time|note)/, ctx => b.all([
-  ctx.deleteMessage().catch(() => {}),
+  remove(ctx),
   ctx.flow.enter(`order.${ctx.match[1]}`, {order: ctx.flow.state.order})]));
 
 scene.action(/payment\.(payme|cash)/, ctx =>
@@ -29,11 +29,12 @@ scene.action('cancel', ctx =>
       ctx.flow.enter('menu')])));
 
 scene.action('submit', ctx =>
-  update(ctx.flow.state.order.id, {status: 'submitted'})
+  update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
     .tap(() => ctx.reply('✅ Order submitted'))
-    .then(order => b.all([
+    .tap(order => b.all([
       reset(ctx),
-      submit(ctx, order)])));
+      submit(ctx.telegram, order)]))
+    .then(order => ctx.flow.enter('order.await', {order})));
 
 scene.use((ctx, next) =>
   reply(ctx, message(ctx.flow.state.order), extra(ctx.flow.state.order))

@@ -1,3 +1,4 @@
+import b from 'bluebird';
 import {Scene} from 'telegraf-flow';
 import create from '../../sql/create-order';
 import action from '../action';
@@ -15,10 +16,14 @@ const extra = {
 
 scene.enter(ctx => reply(ctx, 'Menu', extra));
 
-scene.action('order', ctx =>
+scene.action('order', ctx => b.all([
+  remove(ctx),
   create({user_id: ctx.user.id})
-    .tap(() => remove(ctx))
-    .then(order => ctx.flow.enter('order.create', {order})));
+    .then(order => ctx.flow.enter('order.create', {order}))]));
+
+scene.action('plans', ctx => b.all([
+  remove(ctx),
+  ctx.flow.enter('plans')]));
 
 scene.action(/(.+)/, ctx =>
   ctx.answerCallbackQuery(`Not implemented ${ctx.match[1]}`));

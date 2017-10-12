@@ -1,11 +1,10 @@
 import Telegraf from 'telegraf';
-import r from 'ramda';
 import logger from './middlewares/logger';
 import session from './middlewares/session';
 import group from './middlewares/group';
 import flow from './middlewares/flow';
 import auth from './middlewares/auth';
-import read from '../sql/read-order';
+import work from './worker';
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -14,16 +13,8 @@ bot.use(session);
 bot.use(group);
 bot.use(flow);
 bot.use(auth);
-
-if (process.env.NODE_ENV != 'production') {
-  bot.command('/flow', ctx =>
-    ctx.flow.enter(r.last(ctx.message.text.split(' '))));
-
-  bot.command('/order', ctx =>
-    read(r.last(ctx.message.text.split(' ')))
-      .then(order => ctx.flow.enter('order.create', {order})));
-}
-
 bot.startPolling();
+
+work(bot.telegram);
 
 export default bot;

@@ -1,12 +1,8 @@
 import compact from '../../util/compact';
 
 function ready(order) {
-  return true ||
-         order.category_id &&
-         order.date &&
-         order.start_time &&
-         order.finish_time &&
-         order.payment;
+  return (process.env.NODE_ENV != 'production' && order.category_id) ||
+         (order.category_id && order.date && order.start_time && order.finish_time && order.payment);
 }
 
 export default function(order) {

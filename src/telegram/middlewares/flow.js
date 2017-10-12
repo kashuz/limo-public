@@ -1,11 +1,20 @@
+import r from 'ramda';
 import glob from 'glob';
 import path from 'path';
 import Flow from 'telegraf-flow';
+import read from '../../sql/read-order';
 
-const flow = new Flow();
+const flow = new Flow(
+  glob.sync(__dirname + '/../scenes/**/*.js').map(
+    file => require(path.resolve(file)).default));
 
-glob.sync(__dirname + '/../scenes/**/*.js').forEach(
-  file => flow.register(
-    require(path.resolve(file)).default));
+if (process.env.NODE_ENV != 'production') {
+  flow.command('/flow', ctx =>
+    ctx.flow.enter(r.last(ctx.message.text.split(' '))));
+
+  flow.command('/order', ctx =>
+    read(r.last(ctx.message.text.split(' ')))
+      .then(order => ctx.flow.enter('order.create', {order})));
+}
 
 export default flow;

@@ -13,7 +13,7 @@ const extra = {
       callback_data: 'agreement.yes'}]]}};
 
 scene.enter(ctx =>
-  translate(ctx.user, 'agreement')
+  translate('agreement')
     .then(text => reply(ctx, text, extra)));
 
 scene.action('agreement.yes', ctx => b
@@ -23,7 +23,7 @@ scene.action('agreement.yes', ctx => b
   .then(() => ctx.flow.enter('menu')));
 
 scene.use((ctx, next) =>
-  translate(ctx.user, 'agreement')
+  translate('agreement')
     .then(text => reply(ctx, text, extra))
     .then(() => next()));
 

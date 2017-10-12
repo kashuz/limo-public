@@ -1,13 +1,27 @@
 import {Scene} from 'telegraf-flow';
 import translate from '../../translate';
-import delay from '../../util/delay';
+import action from '../action';
+
+const {reply, reset} = action('scene.plans.message');
+
+const extra = {
+  parse_mode: 'html',
+  reply_markup: {
+    inline_keyboard: [
+      [{text: '⬅ Back', callback_data: 'cancel'}]]}};
 
 const scene = new Scene('plans');
 
 scene.enter(ctx =>
-  translate(ctx.user, 'plans')
-    .then(text => ctx.reply(text))
-    .then(delay(1000))
-    .then(() => ctx.flow.enter('menu')));
+  translate('plans')
+    .then(text => reply(ctx, text, extra)));
+
+scene.action('cancel', ctx =>
+  reset(ctx).then(() => ctx.flow.enter('menu')));
+
+scene.use(ctx =>
+  translate('plans')
+    .then(text => reply(ctx, text, extra))
+    .then(() => next()));
 
 export default scene;
