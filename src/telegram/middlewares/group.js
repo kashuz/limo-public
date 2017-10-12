@@ -61,7 +61,9 @@ composer.action(/reject\.(\d+)/, ctx =>
     .then(order => b.all([
       reject(ctx.telegram, order),
       ctx.reply(`👎 Order №${order.id} rejected`),
-      ctx.editMessageText(message(order), {parse_mode: 'html', inline_keyboard: []})])));
+      ctx.editMessageText(message(order), {parse_mode: 'html', inline_keyboard: []})]))
+    .catch(error => ctx.answerCallbackQuery(error + ''))
+    .catch(() => {}));
 
 composer.action('noop', ctx =>
   ctx.answerCallbackQuery('Please choose valid car'));
@@ -71,7 +73,7 @@ const group = composer.middleware();
 export default function middleware(ctx, next) {
   if (ctx.chat.id < 0)
     return ctx.chat.id == process.env.GROUP_ID
-      ? group(ctx, next)
+      ? group(ctx, () => b.resolve())
       : b.resolve();
 
   return next();
