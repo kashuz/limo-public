@@ -18,6 +18,7 @@
     "pg": "^7.3.0",
     "ramda": "^0.24.1",
     "ramdasauce": "^2.1.0",
+    "redis": "^2.8.0",
     "telegraf": "^3.12.1",
     "telegraf-flow": "^8.3.0",
     "telegraf-logger": "^1.0.3"
