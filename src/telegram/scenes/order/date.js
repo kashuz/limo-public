@@ -6,7 +6,7 @@ import {date} from '../../../util/date';
 import calendar from '../../keyboards/calendar';
 import update from '../../../sql/update-order';
 
-const {reply, reset} = action('scene.date.location.message');
+const {reply, reset} = action('scene.order.date.message');
 const scene = new Scene('order.date');
 
 scene.enter(ctx =>
