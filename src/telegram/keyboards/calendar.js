@@ -1,7 +1,6 @@
 import r from 'ramda';
 import {calendar, format, neighbours} from '../../util/calendar';
-
-const concat = r.reduce(r.concat, []);
+import concat from '../../util/concat';
 
 export default function(pair) {
   const {prev, next} = neighbours(pair);
