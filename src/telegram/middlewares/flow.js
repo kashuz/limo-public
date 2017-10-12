@@ -9,12 +9,13 @@ const flow = new Flow(
     file => require(path.resolve(file)).default));
 
 if (process.env.NODE_ENV != 'production') {
-  flow.command('/menu', ctx =>
+  flow.command('menu', ctx =>
     ctx.flow.enter('menu'));
 
-  flow.command('/order', ctx =>
-    read(r.last(ctx.message.text.split(' ')))
-      .then(order => ctx.flow.enter('order.create', {order})));
+  flow.command('order', ctx =>
+    r.last(ctx.message.text.split(' ')) &&
+      read(r.last(ctx.message.text.split(' ')))
+        .then(order => ctx.flow.enter('order.create', {order})));
 }
 
 export default flow;
