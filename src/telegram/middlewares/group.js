@@ -69,10 +69,13 @@ composer.action('noop', ctx =>
 const group = composer.middleware();
 
 export default function middleware(ctx, next) {
-  return ctx.chat.id == process.env.GROUP_ID
-    ? group(ctx, next)
-    : next();
-};
+  if (ctx.chat.id < 0)
+    return ctx.chat.id == process.env.GROUP_ID
+      ? group(ctx, next)
+      : b.resolve();
+
+  return next();
+}
 
 export function submit(telegram, order) {
   return cars(order)
