@@ -14,6 +14,10 @@ scene.enter(ctx =>
       ctx.flow.state.order,
       process.env.HANDLE_TIMEOUT)));
 
+scene.action('menu', ctx => b.all([
+  ctx.editMessageReplyMarkup({inline_keyboard: []}),
+  ctx.flow.enter('menu')]));
+
 scene.use((ctx, next) =>
   reply(ctx, '⛔️ Not implemented yet')
     .then(() => next()));
@@ -24,19 +28,28 @@ export function timeout(telegram, order) {
   return b.all([
     stop(telegram, order),
     translate('order_timeout').then(text =>
-      telegram.sendMessage(order.user_id, text))]);
+      telegram.sendMessage(order.user_id, text, {
+        parse_mode: 'markdown',
+        reply_markup: {
+          inline_keyboard: [[{text: '➡ Menu', callback_data: 'menu'}]]}}))]);
 }
 
 export function accept(telegram, order) {
   return b.all([
     stop(telegram, order),
     translate('order_accept').then(text =>
-      telegram.sendMessage(order.user_id, text))]);
+      telegram.sendMessage(order.user_id, text, {
+        parse_mode: 'markdown',
+        reply_markup: {
+          inline_keyboard: [[{text: '➡ Menu', callback_data: 'menu'}]]}}))]);
 }
 
 export function reject(telegram, order) {
   return b.all([
     stop(telegram, order),
     translate('order_reject').then(text =>
-      telegram.sendMessage(order.user_id, text))]);
+      telegram.sendMessage(order.user_id, text, {
+        parse_mode: 'markdown',
+        reply_markup: {
+          inline_keyboard: [[{text: '➡ Menu', callback_data: 'menu'}]]}}))]);
 }
