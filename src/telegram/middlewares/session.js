@@ -11,7 +11,11 @@ export default function(ctx, next) {
          last_name = :last_name,
          username = :username
        returning *`,
-      r.pick(['id', 'first_name', 'last_name', 'username', 'language_code'], ctx.from))
+      {id: ctx.from.id,
+       first_name: ctx.from.first_name || null,
+       last_name: ctx.from.last_name || null,
+       username: ctx.from.username || null,
+       language_code: ctx.from.language_code || null})
     .then(r.prop('rows'))
     .then(r.head)
     .then(({session, ...user}) => {
