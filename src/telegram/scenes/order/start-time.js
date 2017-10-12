@@ -21,9 +21,6 @@ scene.action('cancel', ctx => b.all([
   reset(ctx),
   ctx.flow.enter('order.create', {order: ctx.flow.state.order})]));
 
-scene.action('noop', ctx =>
-  ctx.answerCallbackQuery('Please choose start time'));
-
 scene.use((ctx, next) =>
   reply(ctx, 'Please choose start time', clock()).then(() => next()));
 
