@@ -10,11 +10,11 @@ const flow = new Flow(
 
 if (process.env.NODE_ENV != 'production') {
   flow.command('/flow', ctx =>
-    ctx.flow.enter(r.last(ctx.message.text.split(' '))));
+    ctx.flow.enter(r.last(ctx.message.text.split(' '))).catch(() => {}));
 
   flow.command('/order', ctx =>
     read(r.last(ctx.message.text.split(' ')))
-      .then(order => ctx.flow.enter('order.create', {order})));
+      .then(order => ctx.flow.enter('order.create', {order})).catch(() => {}));
 }
 
 export default flow;
