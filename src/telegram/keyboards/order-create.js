@@ -1,8 +1,7 @@
 import compact from '../../util/compact';
 
 function ready(order) {
-  return (process.env.NODE_ENV != 'production' && order.category_id) ||
-         (order.category_id && order.date && order.start_time && order.finish_time && order.payment);
+  return order.category_id && order.date && order.start_time && order.finish_time && order.payment;
 }
 
 export default function(order) {
@@ -10,8 +9,6 @@ export default function(order) {
     parse_mode: 'html',
     reply_markup: {
       inline_keyboard: compact([
-        ready(order) &&
-        [{text: '🚀 Submit', callback_data: 'submit'}],
         [{text: '📍 Location', callback_data: 'location'}],
         [{text: '🚗 Car', callback_data: 'car'}],
         [{text: '🗓 Date', callback_data: 'date'},
@@ -19,5 +16,7 @@ export default function(order) {
         [{text: `${order.payment === 'payme' ? '◼️' : '◻️'} Payme`, callback_data: 'payment.payme'},
           {text: `${order.payment === 'cash' ? '◼️' : '◻️'} Cash`, callback_data: 'payment.cash'}],
         [{text: '📝 Notes', callback_data: 'note'}],
+        ready(order) &&
+          [{text: '✅ Submit', callback_data: 'submit'}],
         [{text: '❌ Cancel', callback_data: 'cancel'}]])}};
 }
