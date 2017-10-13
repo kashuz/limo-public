@@ -25,7 +25,6 @@ scene.action('cancel', ctx => b.all([
 
 scene.on('text', ctx =>
   update(ctx.flow.state.order.id, {note: ctx.message.text})
-    .tap(() => ctx.answerCallbackQuery('Notes saved'))
     .then(order => b.all([
       reset(ctx),
       ctx.flow.enter('order.create', {order})])));
