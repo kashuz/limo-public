@@ -32,9 +32,8 @@ function below(length, index) {
 function extra(categories, cars, category, position, prev, next) {
   return {
     caption: r.join('\n', [
-      `Model: ${cars[position].name}`,
-      `More info: ${cars[position].link}`,
-      `(${position + 1} of ${cars.length})`]),
+      `${cars[position].name} (${position + 1} of ${cars.length})`,
+      `${cars[position].link}`]),
     reply_markup: {
       inline_keyboard: [
         [{text: '◀️', callback_data: `skip.${category}.${cars[prev].id}`},
@@ -90,7 +89,7 @@ scene.action(/select\.(\d+)\.(\d+)/, ctx =>
   update(ctx.flow.state.order.id, {
       category_id: ctx.match[1],
       car_id: ctx.match[2]})
-    .tap(() => ctx.answerCallbackQuery('Car selection saved'))
+    .tap(() => ctx.answerCallbackQuery('Car selected'))
     .then(order => b.all([
       ctx.editMessageReplyMarkup({inline_keyboard: []}),
       ctx.flow.enter('order.create', {order})])));
@@ -99,7 +98,7 @@ scene.action(/random\.(\d+)/, ctx =>
   update(ctx.flow.state.order.id, {
       category_id: ctx.match[1],
       car_id: null})
-    .tap(() => ctx.answerCallbackQuery('Car selection saved'))
+    .tap(() => ctx.answerCallbackQuery('Car selected'))
     .then(order => b.all([
       ctx.editMessageReplyMarkup({inline_keyboard: []}),
       ctx.flow.enter('order.create', {order})])));

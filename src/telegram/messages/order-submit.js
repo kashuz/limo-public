@@ -1,13 +1,11 @@
+import r from 'ramda';
 import create from './order-create';
 
-function status(order) {
-  return order.status ? `` : '';
-}
-
 export default function(order) {
-  return `${create(order).trim()}
-
-Status: ${order.status}
-Client: ${order.first_name} ${order.last_name} +${order.phone_number}
-`
+  return r.pipe(
+    r.trim,
+    r.split("\n"),
+    r.insert(1, `${order.first_name || ''} ${order.last_name || ''} +${order.phone_number}`),
+    r.join("\n"))
+  (create(order))
 }

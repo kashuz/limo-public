@@ -23,16 +23,16 @@ scene.action(/payment\.(payme|cash)/, ctx =>
 
 scene.action('cancel', ctx =>
   update(ctx.flow.state.order.id, {status: 'cancelled'})
-    .then(() => ctx.reply('✅ Order cancelled'))
-    .then(() => b.all([
-      reset(ctx),
+    .tap(() => ctx.answerCallbackQuery('Order cancelled').catch(() => {}))
+    .then(order => b.all([
+      reset(ctx, message(order)),
       ctx.flow.enter('menu')])));
 
 scene.action('submit', ctx =>
   update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
-    .tap(() => ctx.reply('✅ Order submitted'))
+    .tap(() => ctx.answerCallbackQuery('Order submitted').catch(() => {}))
     .tap(order => b.all([
-      reset(ctx),
+      reset(ctx, message(order)),
       submit(ctx.telegram, order)]))
     .then(order => ctx.flow.enter('order.await', {order})));
 

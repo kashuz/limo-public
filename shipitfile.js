@@ -1,4 +1,4 @@
-var utils = require('shipit-utils');
+const utils = require('shipit-utils');
 
 module.exports = function (shipit) {
   require('shipit-deploy')(shipit);
