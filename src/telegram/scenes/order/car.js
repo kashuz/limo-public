@@ -39,11 +39,11 @@ function extra(categories, cars, category, position, prev, next) {
         [{text: '◀️', callback_data: `skip.${category}.${cars[prev].id}`},
          {text: 'Select', callback_data: `select.${category}.${cars[position].id}`},
          {text: '▶️', callback_data: `skip.${category}.${cars[next].id}`}],
-        [{text: '🎲 Random', callback_data: `random.${category}`}],
+        [{text: '🎲 Любой', callback_data: `random.${category}`}],
         categories.map(c => ({
           text: (category === c.id ? '◼️ ' : '◻️ ') + c.name,
           callback_data: `category.${c.id}`})),
-        [{text: '⬅ Back', callback_data: `cancel`}]]}};
+        [{text: '⬅ Назад', callback_data: `cancel`}]]}};
 }
 
 function show(ctx, category, car) {
@@ -64,11 +64,11 @@ function show(ctx, category, car) {
 
 function intro(ctx) {
   return categories().then(categories =>
-    ctx.reply('Please select class', {
+    ctx.reply('Выберите класс', {
       reply_markup: {
         inline_keyboard: [
           categories.map(c => ({text: '◻️ ' + c.name, callback_data: `category.${c.id}`})),
-          [{text: '⬅ Back', callback_data: `cancel`}]]}}));
+          [{text: '⬅ Назад', callback_data: `cancel`}]]}}));
 }
 
 scene.enter(ctx => ctx.flow.state.order.category_id

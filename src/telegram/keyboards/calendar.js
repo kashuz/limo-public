@@ -16,5 +16,5 @@ export default function(pair) {
           ? {text: `${day}`,
              callback_data: `day.${pair[0]}.${pair[1]}.${day}`}
           : {text: '◦', callback_data: 'noop'})),
-        [[{text: '⬅ Back', callback_data: 'cancel'}]]])}};
+        [[{text: '⬅ Назад', callback_data: 'cancel'}]]])}};
 }

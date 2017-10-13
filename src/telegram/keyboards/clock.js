@@ -16,5 +16,5 @@ export default function(time) {
             {text: `${h1}:00`, callback_data: `time.${h1}:00`}, h2 &&
             {text: `${h2}:00`, callback_data: `time.${h2}:00`}]),
           r.splitEvery(2, r.map(h => pad(h, 2, '0'), r.range(from, max + 1)))),
-        [[{text: '⬅ Back', callback_data: 'cancel'}]])}};
+        [[{text: '⬅ Назад', callback_data: 'cancel'}]])}};
 }

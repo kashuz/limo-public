@@ -9,10 +9,10 @@ const scene = new Scene('menu');
 const extra = {
   reply_markup: {
     inline_keyboard: [
-      [{text: '🚘 New order', callback_data: 'order'}],
-      [{text: '🏷 Plans', callback_data: 'plans'}],
-      [{text: '📔 My orders', callback_data: 'history'}],
-      [{text: '☎️ Change phone', callback_data: 'phone-number'}]]}};
+      [{text: '🚘 Сделать заказ', callback_data: 'order'}],
+      [{text: '🏷 Тарифы', callback_data: 'plans'}],
+      [{text: '📔 Мои заказы', callback_data: 'history'}],
+      [{text: '☎️ Изменить номер ', callback_data: 'phone-number'}]]}};
 
 scene.enter(ctx => reply(ctx, 'Menu', extra));
 

@@ -8,7 +8,7 @@ const extra = {
   parse_mode: 'html',
   reply_markup: {
     inline_keyboard: [
-      [{text: '⬅ Back', callback_data: 'cancel'}]]}};
+      [{text: '⬅ Назад', callback_data: 'cancel'}]]}};
 
 const scene = new Scene('plans');
 
