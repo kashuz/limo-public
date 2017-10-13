@@ -10,7 +10,7 @@ const {reply, reset} = action('scene.order.date.message');
 const scene = new Scene('order.date');
 
 scene.enter(ctx =>
-  reply(ctx, 'Please choose date', calendar(init(ctx.flow.state.order.date))));
+  reply(ctx, 'Пожалуйста выберите дату', calendar(init(ctx.flow.state.order.date))));
 
 scene.action(/month\.(\d+)\.(\d+)/, ctx => ctx
   .editMessageReplyMarkup(calendar([ctx.match[1], ctx.match[2]]).reply_markup)
@@ -18,20 +18,20 @@ scene.action(/month\.(\d+)\.(\d+)/, ctx => ctx
 
 scene.action(/day\.(\d+)\.(\d+)\.(\d+)/, ctx =>
   update(ctx.flow.state.order.id, {date: date(ctx.match[1], ctx.match[2], ctx.match[3])})
-    .tap(() => ctx.answerCallbackQuery('Date saved'))
+    .tap(() => ctx.answerCallbackQuery('Дата выбрана'))
     .then(order => b.all([
       reset(ctx),
       ctx.flow.enter('order.create', {order})])));
 
 scene.action('noop', ctx =>
-  ctx.answerCallbackQuery('Please choose date'));
+  ctx.answerCallbackQuery('Пожалуйста выберите дату'));
 
 scene.action('cancel', ctx => b.all([
   reset(ctx),
   ctx.flow.enter('order.create', {order: ctx.flow.state.order})]));
 
 scene.use((ctx, next) =>
-  reply(ctx, 'Please choose date', calendar(init()))
+  reply(ctx, 'Пожалуйста выберите дату', calendar(init()))
     .then(() => next()));
 
 export default scene;

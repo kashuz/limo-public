@@ -17,7 +17,7 @@ function extra(order) {
 }
 
 scene.enter(ctx =>
-  reply(ctx, 'Please send notes', extra(ctx.flow.state.order)));
+  reply(ctx, 'Пожалуйста введите комментарий к заказу. Например: свадьба, встреча, аэропорт и т.д. Чем детальнее тем лучше.', extra(ctx.flow.state.order)));
 
 scene.action('cancel', ctx => b.all([
   reset(ctx),
@@ -31,13 +31,13 @@ scene.on('text', ctx =>
 
 scene.action('clear', ctx =>
   update(ctx.flow.state.order.id, {note: null})
-    .tap(() => ctx.answerCallbackQuery('Notes cleared'))
+    .tap(() => ctx.answerCallbackQuery('Комментарии удалены'))
     .then(order => b.all([
       reset(ctx),
       ctx.flow.enter('order.create', {order})])));
 
 scene.use((ctx, next) =>
-  reply(ctx, 'Please send notes', extra(ctx.flow.state.order))
+  reply(ctx, 'Пожалуйста введите комментарий к заказу', extra(ctx.flow.state.order))
     .then(() => next()));
 
 export default scene;

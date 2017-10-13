@@ -28,7 +28,7 @@ scene.action('cancel', ctx => b.all([
 scene.on('location', ctx =>
   geo(ctx.message.location)
     .then(location => update(ctx.flow.state.order.id, {location}))
-    .tap(() => ctx.answerCallbackQuery('Location selected'))
+    .tap(() => ctx.answerCallbackQuery('Адрес выбран'))
     .then(order => b.all([
       reset(ctx),
       ctx.flow.enter('order.create', {order})]))

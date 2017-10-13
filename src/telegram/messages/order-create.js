@@ -4,10 +4,10 @@ import {format as date} from '../../util/date';
 
 const rules = [
   ['location', 'Адрес: не указан', address],
-  ['category', 'Машина: не выбрана', (category, {car}) => `${car || 'Любая машина'} из класса ${category}`],
-  ['date', 'Дата: ну указан', date],
-  ['start_time', 'Время: ну указан', (start, {finish_time: finish}) => `${start} - ${finish}, ${finish.split(':')[0] - start.split(':')[0]} hour(s)`],
-  ['payment', 'Способ оплаты: не выбран', payment => (payment === 'payme' ? 'Payme' : 'Cash')]];
+  ['category', 'Машина: не выбрана', (category, {car}) => `${car || 'Любая машина'} класс: ${category}`],
+  ['date', 'Дата: не указан', date],
+  ['start_time', 'Время: не указана', (start, {finish_time: finish}) => `${start} - ${finish}, ${finish.split(':')[0] - start.split(':')[0]} час(ов)`],
+  ['payment', 'Способ оплаты: не выбран', payment => (payment === 'payme' ? 'Payme' : 'Наличные')]];
 
 function fields(order) {
   return r.join("\n", r.map(
@@ -29,6 +29,8 @@ function status(order) {
     accepted: ' (accepted)',
     rejected: ' (rejected)',
     timedout: ' (timed out)',
+    payment_cancelled: ' (payment cancelled)',
+    completed: ' (completed)',
   }[order.status] || ''
 }
 
