@@ -10,13 +10,18 @@ function remove(key, ctx) {
     resolve()});
 }
 
-function reset(key, ctx) {
+function reset(key, ctx, text) {
   return new Promise(resolve => {
     if (ctx.session[key])
-      ctx.telegram
-        .editMessageReplyMarkup(ctx.user.id, ctx.session[key],
-          {reply_markup: {remove_keyboard: true}})
-        .then(resolve, resolve);
+      return text
+        ? ctx.telegram
+          .editMessageText(ctx.user.id, ctx.session[key], undefined, text,
+            {parse_mode: 'html', reply_markup: {inline_keyboard: []}})
+          .then(resolve, resolve)
+        : ctx.telegram
+          .editMessageReplyMarkup(ctx.user.id, ctx.session[key],
+            {parse_mode: 'html', reply_markup: {inline_keyboard: []}})
+          .then(resolve, resolve);
 
     resolve()});
 }

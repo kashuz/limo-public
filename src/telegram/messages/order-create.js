@@ -13,8 +13,8 @@ function fields(order) {
   return r.join("\n", r.map(
     ([prop, empty, value]) =>
       order[prop]
-        ? `✅ ${value(order[prop], order)}`
-        : `⭕️ ${empty}`,
+        ? `🔹 ${value(order[prop], order)}`
+        : `🔸 ${empty}`,
     rules));
 }
 
@@ -22,6 +22,20 @@ function note(order) {
   return order.note ? `Notes: <i>${order.note}</i>` : ''
 }
 
+function status(order) {
+  return {
+    submitted: ' (submitted)',
+    cancelled: ' (cancelled)',
+    accepted: ' (accepted)',
+    rejected: ' (rejected)',
+    timedout: ' (timed out)',
+  }[order.status] || ''
+}
+
 export default function(order) {
-  return `Order <b>№${order.id}</b>\n\n${fields(order)}\n\n${note(order)}`
+  return `Order <b>№${order.id}</b>${status(order)}
+
+${fields(order)}
+
+${note(order)}`
 }
