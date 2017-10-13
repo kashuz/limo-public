@@ -7,12 +7,10 @@ import translate from '../../../translate';
 const {reply, reset} = action('scene.order.await.message');
 const scene = new Scene('order.await');
 
-scene.enter(ctx =>
-  reply(ctx, '⏱ Please wait while your order is being handled')
-    .then(() => start(
-      ctx.telegram,
-      ctx.flow.state.order,
-      process.env.HANDLE_TIMEOUT)));
+scene.enter(ctx => start(
+  ctx.telegram,
+  ctx.flow.state.order,
+  process.env.HANDLE_TIMEOUT));
 
 scene.action('menu', ctx => b.all([
   ctx.editMessageReplyMarkup({inline_keyboard: []}),
