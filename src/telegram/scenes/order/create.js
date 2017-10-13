@@ -23,14 +23,14 @@ scene.action(/payment\.(payme|cash)/, ctx =>
 
 scene.action('cancel', ctx =>
   update(ctx.flow.state.order.id, {status: 'cancelled'})
-    .tap(() => ctx.answerCallbackQuery('Order cancelled').catch(() => {}))
+    .tap(() => ctx.answerCallbackQuery('Заказ отменен').catch(() => {}))
     .then(order => b.all([
       reset(ctx, message(order)),
       ctx.flow.enter('menu')])));
 
 scene.action('submit', ctx =>
   update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
-    .tap(() => ctx.answerCallbackQuery('Order submitted').catch(() => {}))
+    .tap(() => ctx.answerCallbackQuery('Заказ отправлен').catch(() => {}))
     .tap(order => b.all([
       reset(ctx, message(order)),
       submit(ctx.telegram, order)]))

@@ -14,7 +14,7 @@ const extra = {
       [{text: '📔 Мои заказы', callback_data: 'history'}],
       [{text: '☎️ Изменить номер ', callback_data: 'phone-number'}]]}};
 
-scene.enter(ctx => reply(ctx, 'Menu', extra));
+scene.enter(ctx => reply(ctx, 'Главное меню', extra));
 
 scene.action('order', ctx => b.all([
   remove(ctx),
@@ -26,10 +26,10 @@ scene.action('plans', ctx => b.all([
   ctx.flow.enter('plans')]));
 
 scene.action(/(.+)/, ctx =>
-  ctx.answerCallbackQuery(`Not implemented ${ctx.match[1]}`));
+  ctx.answerCallbackQuery(`Не реализован ${ctx.match[1]}`));
 
 scene.use((ctx, next) =>
-  reply(ctx, `Menu`, extra)
+  reply(ctx, `Главное меню`, extra)
     .then(() => next()));
 
 export default scene;

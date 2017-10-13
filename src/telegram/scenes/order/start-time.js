@@ -7,7 +7,7 @@ const {reply, reset, remove} = action('scene.order.start-time.message');
 const scene = new Scene('order.start-time');
 
 scene.enter(ctx =>
-  reply(ctx, 'Please choose start time', clock()));
+  reply(ctx, 'Выберите время подачи машины', clock()));
 
 scene.action(/time\.(\d+:\d+)/, ctx => ctx
   .answerCallbackQuery()
@@ -22,6 +22,6 @@ scene.action('cancel', ctx => b.all([
   ctx.flow.enter('order.create', {order: ctx.flow.state.order})]));
 
 scene.use((ctx, next) =>
-  reply(ctx, 'Please choose start time', clock()).then(() => next()));
+  reply(ctx, 'Выберите время подачи машины', clock()).then(() => next()));
 
 export default scene;

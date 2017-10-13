@@ -8,6 +8,7 @@ const scene = new Scene('agreement');
 
 const extra = {
   reply_markup: {
+    remove_keyboard: true,
     inline_keyboard: [[{
       text: 'Я согласен и принимаю условия limo.uz ',
       callback_data: 'agreement.yes'}]]}};

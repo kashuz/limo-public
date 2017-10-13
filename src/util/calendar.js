@@ -2,6 +2,8 @@ import r from 'ramda';
 import m from 'moment';
 import {Calendar, MONDAY} from 'node-calendar';
 
+m.locale('ru');
+
 function moment(year, month, day) {
   return m({year, month: month - 1, day});
 }

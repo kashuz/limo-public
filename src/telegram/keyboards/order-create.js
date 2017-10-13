@@ -10,7 +10,7 @@ export default function(order) {
     reply_markup: {
       inline_keyboard: compact([
         [{text: '📍 Адрес подачи', callback_data: 'location'}],
-        [{text: '🚗 Автомобиль', callback_data: 'car'}],
+        [{text: '🚗 Машина', callback_data: 'car'}],
         [{text: '🗓 Дата', callback_data: 'date'},
           {text: '⏰ Время', callback_data: 'start-time'}],
         [{text: `${order.payment === 'payme' ? '◼️' : '◻️'} Payme`, callback_data: 'payment.payme'},

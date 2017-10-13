@@ -14,9 +14,6 @@ scene.on('contact', ctx =>
   db('user')
     .update({phone_number: ctx.message.contact.phone_number})
     .where({id: ctx.user.id})
-    .then(() => ctx.answerCallbackQuery('Номре телефона сохранен', {
-      reply_markup: {
-        remove_keyboard: true}}))
     .then(() => ctx.flow.enter('agreement')));
 
 scene.use((ctx, next) =>

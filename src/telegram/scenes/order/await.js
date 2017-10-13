@@ -14,8 +14,12 @@ scene.enter(ctx => start(
   process.env.HANDLE_TIMEOUT));
 
 scene.action('menu', ctx => b.all([
-  ctx.editMessageReplyMarkup({inline_keyboard: []}),
+  ctx.deleteMessage(),
   ctx.flow.enter('menu')]));
+
+scene.action('payment', ctx => b.all([
+  ctx.deleteMessage(),
+  ctx.flow.enter('order.payment.payme', {order: ctx.flow.state.order})]));
 
 export default scene;
 
@@ -27,7 +31,7 @@ export function timeout(telegram, order) {
       telegram.sendMessage(order.user_id, text, {
         parse_mode: 'markdown',
         reply_markup: {
-          inline_keyboard: [[{text: '➡ Menu', callback_data: 'menu'}]]}}))]);
+          inline_keyboard: [[{text: '➡ Главное меню', callback_data: 'menu'}]]}}))]);
 }
 
 export function accept(telegram, order) {
@@ -38,7 +42,7 @@ export function accept(telegram, order) {
       telegram.sendMessage(order.user_id, text, {
         parse_mode: 'markdown',
         reply_markup: {
-          inline_keyboard: [[{text: '➡ Menu', callback_data: 'menu'}]]}}))]);
+          inline_keyboard: [[{text: '➡ Перейти к оплате', callback_data: 'payment'}]]}}))]);
 }
 
 export function reject(telegram, order) {
@@ -49,7 +53,7 @@ export function reject(telegram, order) {
       telegram.sendMessage(order.user_id, text, {
         parse_mode: 'markdown',
         reply_markup: {
-          inline_keyboard: [[{text: '➡ Menu', callback_data: 'menu'}]]}}))]);
+          inline_keyboard: [[{text: '➡ Главное меню', callback_data: 'menu'}]]}}))]);
 }
 
 function reset(telegram, order) {
