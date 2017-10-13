@@ -9,7 +9,7 @@ const scene = new Scene('order.location');
 
 const extra = {
   reply_markup: {
-    inline_keyboard: [[{text: '⬅ Back', callback_data: 'cancel'}]]}};
+    inline_keyboard: [[{text: '⬅ Назад', callback_data: 'cancel'}]]}};
 
 function pin(ctx, location) {
   return location
@@ -19,7 +19,7 @@ function pin(ctx, location) {
 
 scene.enter(ctx =>
   pin(ctx, ctx.flow.state.order.location)
-    .then(() => reply(ctx, 'Please send location', extra)));
+    .then(() => reply(ctx, 'Отправьте геолокацию подачи машины', extra)));
 
 scene.action('cancel', ctx => b.all([
   reset(ctx),
@@ -33,10 +33,10 @@ scene.on('location', ctx =>
       reset(ctx),
       ctx.flow.enter('order.create', {order})]))
     .catch(() =>
-      reply(ctx, 'This location is not supported. Please send another location', extra)));
+      reply(ctx, 'Пока заказы принимаются только в Ташкенте', extra)));
 
 scene.use((ctx, next) =>
-  reply(ctx, 'Please send location', extra)
+  reply(ctx, 'Отправьте геолокацию подачи машины', extra)
     .then(() => next()));
 
 export default scene;

@@ -9,7 +9,7 @@ const scene = new Scene('agreement');
 const extra = {
   reply_markup: {
     inline_keyboard: [[{
-      text: 'I accept terms and conditions',
+      text: 'Я согласен и принимаю условия limo.uz ',
       callback_data: 'agreement.yes'}]]}};
 
 scene.enter(ctx =>
@@ -19,7 +19,7 @@ scene.enter(ctx =>
 scene.action('agreement.yes', ctx => b
   .all([
     reset(ctx),
-    ctx.answerCallbackQuery('Terms and conditions accepted')])
+    ctx.answerCallbackQuery('Условия соглашения приняты')])
   .then(() => ctx.flow.enter('menu')));
 
 scene.use((ctx, next) =>

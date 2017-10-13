@@ -25,7 +25,7 @@ composer.action(/location\.(\d+)/, ctx =>
   read(ctx.match[1])
     .then(order => b.all([
       ctx.answerCallbackQuery().catch(() => {}),
-      ctx.replyWithVenue(order.location.latitude, order.location.longitude, `Location of order №${order.id}`, address(order.location))])));
+      ctx.replyWithVenue(order.location.latitude, order.location.longitude, `Геолокация заказа №${order.id}`, address(order.location))])));
 
 composer.action(/car\.(\d+)\.(\d+)/, ctx =>
   read(ctx.match[1])
@@ -38,7 +38,7 @@ function car(order) {
   return order.car_id
     ? b.resolve(undefined)
     : redis.getAsync(`order.${order.id}.car`)
-      .then(assert('Please select car first'));
+      .then(assert('Сначала выберите машину'));
 }
 
 function format(user) {
@@ -71,8 +71,6 @@ composer.action(/reject\.(\d+)/, ctx =>
     .catch(error => ctx.answerCallbackQuery(error + ''))
     .catch(() => {}));
 
-composer.action('noop', ctx =>
-  ctx.answerCallbackQuery('Please choose valid car'));
 
 const group = composer.middleware();
 

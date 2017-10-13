@@ -9,14 +9,14 @@ export default function(order) {
     parse_mode: 'html',
     reply_markup: {
       inline_keyboard: compact([
-        [{text: '📍 Location', callback_data: 'location'}],
-        [{text: '🚗 Car', callback_data: 'car'}],
-        [{text: '🗓 Date', callback_data: 'date'},
-          {text: '⏰ Time', callback_data: 'start-time'}],
+        [{text: '📍 Адрес подачи', callback_data: 'location'}],
+        [{text: '🚗 Автомобиль', callback_data: 'car'}],
+        [{text: '🗓 Дата', callback_data: 'date'},
+          {text: '⏰ Время', callback_data: 'start-time'}],
         [{text: `${order.payment === 'payme' ? '◼️' : '◻️'} Payme`, callback_data: 'payment.payme'},
-          {text: `${order.payment === 'cash' ? '◼️' : '◻️'} Cash`, callback_data: 'payment.cash'}],
-        [{text: '📝 Notes', callback_data: 'note'}],
+          {text: `${order.payment === 'cash' ? '◼️' : '◻️'} Наличные`, callback_data: 'payment.cash'}],
+        [{text: '📝 Комментарии', callback_data: 'note'}],
         ready(order) &&
-          [{text: '✅ Submit', callback_data: 'submit'}],
-        [{text: '❌ Cancel', callback_data: 'cancel'}]])}};
+          [{text: '✅ Отправить заказ', callback_data: 'submit'}],
+        [{text: '❌ Отмена', callback_data: 'cancel'}]])}};
 }
