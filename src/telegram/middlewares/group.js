@@ -41,6 +41,12 @@ function car(order) {
       .then(assert('Please select car first'));
 }
 
+function format(user) {
+  return user.username
+    ? `@${user.username}`
+    : r.trim(`${user.first_name || ''} ${user.last_name || ''}`)
+}
+
 composer.action(/accept\.(\d+)/, ctx =>
   read(ctx.match[1])
     .then(order =>
@@ -50,7 +56,7 @@ composer.action(/accept\.(\d+)/, ctx =>
           {status: 'submitted'}))
         .then(order => b.all([
           accept(ctx.telegram, order),
-          ctx.reply(`👍 Order №${order.id} accepted`),
+          ctx.reply(`ℹ️ ${format(ctx.from)} #accepted order №${order.id}`),
           ctx.editMessageText(message(order), {parse_mode: 'html', inline_keyboard: []})])))
     .catch(error => ctx.answerCallbackQuery(error + '')));
 
@@ -60,7 +66,7 @@ composer.action(/reject\.(\d+)/, ctx =>
       {status: 'submitted'})
     .then(order => b.all([
       reject(ctx.telegram, order),
-      ctx.reply(`👎 Order №${order.id} rejected`),
+      ctx.reply(`ℹ️ ${format(ctx.from)} #rejected order №${order.id}`),
       ctx.editMessageText(message(order), {parse_mode: 'html', inline_keyboard: []})]))
     .catch(error => ctx.answerCallbackQuery(error + ''))
     .catch(() => {}));
@@ -90,7 +96,7 @@ export function submit(telegram, order) {
 
 export function timeout(telegram, order) {
   return b.all([
-    telegram.sendMessage(process.env.GROUP_ID, `⚠️ Order №${order.id} timed out`),
+    telegram.sendMessage(process.env.GROUP_ID, `⚠️ Order №${order.id} #timedout`),
     redis.getAsync(`order.${order.id}.group`)
       .then(id => telegram.editMessageText(
         process.env.GROUP_ID, id, undefined, message(order), {parse_mode: 'html'}))]);
