@@ -6,13 +6,17 @@ import translate from '../../../translate';
 import persistent from '../../persistent';
 import session from '../../../cache/session';
 import ignore from '../../../util/ignore';
+import update from '../../../sql/update-order';
+import {submit} from '../../middlewares/group';
 
 const scene = new Scene('order.await');
 
 const back = {
   parse_mode: 'html',
   reply_markup: {
-    inline_keyboard: [[{text: '➡ Главное меню', callback_data: 'menu'}]]}};
+    inline_keyboard: [
+      [{text: '🔁 Отправить заново', callback_data: 'retry'}],
+      [{text: '➡ Главное меню', callback_data: 'menu'}]]}};
 
 const forward = {
   parse_mode: 'html',
@@ -39,12 +43,21 @@ scene.enter(ctx => persistent(ctx.telegram)
     ctx.flow.state.order.user_id, progress(0)));
 
 scene.action('menu', ctx => b.all([
-  ctx.deleteMessage(),
+  ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
   ctx.flow.enter('menu')]));
 
 scene.action('payment', ctx => b.all([
-  ctx.deleteMessage(),
+  ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
   ctx.flow.enter('order.payment.payme', {order: ctx.flow.state.order})]));
+
+scene.action('retry', ctx =>
+  update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
+    .tap(order => b.all([
+      ctx.answerCallbackQuery('Заказ отправлен'),
+      ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
+      ctx.persistent.editMessageText('scene.order.create.message', message(order), {parse_mode: 'html'}),
+      submit(ctx.telegram, order)]))
+    .then(order => ctx.flow.enter('order.await', {order})));
 
 scene.use((ctx, next) =>
   (ctx.flow.state.order.status == 'submitted'
