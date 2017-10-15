@@ -30,7 +30,7 @@ function status(order) {
     rejected: ' (rejected)',
     timedout: ' (timed out)',
     payment_cancelled: ' (payment cancelled)',
-    completed: ' (completed)',
+    payment_completed: ' (completed)',
   }[order.status] || ''
 }
 

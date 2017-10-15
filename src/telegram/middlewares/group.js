@@ -85,11 +85,28 @@ export function submit(telegram, order) {
   return cars(order)
     .then(([cars, car]) => persistent(telegram).sendMessage(
       `order.${order.id}.message`, process.env.GROUP_ID,
-      message(order), extra(order, cars, car)))}
+      message(order), extra(order, cars, car)))
+}
 
 export function timeout(telegram, order) {
   return b.all([
     telegram.sendMessage(process.env.GROUP_ID, `⚠️ Order №${order.id} #timedout`),
+    persistent(telegram).editMessageText(
+      `order.${order.id}.message`, process.env.GROUP_ID,
+      message(order), {parse_mode: 'html'})]);
+}
+
+export function complete(telegram, order) {
+  return b.all([
+    telegram.sendMessage(process.env.GROUP_ID, `ℹ️ Order №${order.id} payment #completed`),
+    persistent(telegram).editMessageText(
+      `order.${order.id}.message`, process.env.GROUP_ID,
+      message(order), {parse_mode: 'html'})]);
+}
+
+export function cancel(telegram, order) {
+  return b.all([
+    telegram.sendMessage(process.env.GROUP_ID, `⚠️ Order №${order.id} payment #cancelled`),
     persistent(telegram).editMessageText(
       `order.${order.id}.message`, process.env.GROUP_ID,
       message(order), {parse_mode: 'html'})]);
