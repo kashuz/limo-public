@@ -16,6 +16,12 @@ Object.defineProperty(Context.prototype, 'from', {
   }
 });
 
+const editMessageText = Telegram.prototype.editMessageText;
+Telegram.prototype.editMessageText = function(...args) {
+  return editMessageText.call(this, ...args)
+    .catch(ignore(/message is not modified/i));
+};
+
 const deleteMessage = Telegram.prototype.deleteMessage;
 Telegram.prototype.deleteMessage = function(...args) {
   return deleteMessage.call(this, ...args)

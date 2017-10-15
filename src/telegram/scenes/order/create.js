@@ -11,14 +11,16 @@ const key = 'scene.order.create.message';
 scene.enter(ctx => ctx.persistent
   .sendMessage(key, message(ctx.flow.state.order), extra(ctx.flow.state.order)));
 
-scene.action(/(location|car|date|start-time|note)/, ctx => b.all([
+scene.action(/(car|date|note|location|start-time|phone-number)/, ctx => b.all([
   ctx.persistent.deleteMessage(key),
   ctx.flow.enter(`order.${ctx.match[1]}`, {order: ctx.flow.state.order})]));
 
 scene.action(/payment\.(payme|cash)/, ctx =>
   update(ctx.flow.state.order.id, {payment: ctx.match[1]})
     .then(order => ctx.flow.state.order = order)
-    .then(order => ctx.persistent.editMessageText(key, message(order), extra(order))));
+    .then(order => b.all([
+      ctx.answerCallbackQuery('Способ оплаты выбран'),
+      ctx.persistent.editMessageText(key, message(order), extra(order))])));
 
 scene.action('cancel', ctx =>
   update(ctx.flow.state.order.id, {status: 'cancelled'})

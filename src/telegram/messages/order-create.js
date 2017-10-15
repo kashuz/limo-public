@@ -3,18 +3,38 @@ import {format as address} from '../../util/geo';
 import {format as date} from '../../util/date';
 
 const rules = [
-  ['location', 'Адрес: не указан', address],
-  ['category', 'Машина: не выбрана', (category, {car}) => `${car || 'Любая машина'} класс: ${category}`],
-  ['date', 'Дата: не указан', date],
-  ['start_time', 'Время: не указана', (start, {finish_time: finish}) => `${start} - ${finish}, ${finish.split(':')[0] - start.split(':')[0]} час(ов)`],
-  ['payment', 'Способ оплаты: не выбран', payment => (payment === 'payme' ? 'Payme' : 'Наличные')]];
+  ['location',
+    '🔸 Адрес: не указан',
+    value => `🔹 ${address(value)}`],
+
+  ['category',
+    '🔸 Машина: не выбрана',
+    (category, {car}) => `🔹 ${car || 'Любая машина'} класс: ${category}`],
+
+  ['date',
+    '🔸 Дата: не указан',
+    value => `🔹 ${date(value)}`],
+
+  ['start_time',
+    '🔸 Время: не указана',
+    (start, {finish_time: finish}) => `🔹 ${start} - ${finish}, ${finish.split(':')[0] - start.split(':')[0]} час(ов)`],
+
+  ['phone_number',
+    order => `🔹 Контактный номер: +${order.user.phone_number}`,
+    value => `🔹 Контактный номер: ${value}`],
+
+  ['payment',
+    '🔸 Способ оплаты: не выбран',
+    value => `🔹 ${value === 'payme' ? 'Payme' : 'Наличные'}`]];
 
 function fields(order) {
   return r.join("\n", r.map(
-    ([prop, empty, value]) =>
-      order[prop]
-        ? `🔹 ${value(order[prop], order)}`
-        : `🔸 ${empty}`,
+    ([field, empty, filled]) =>
+      order[field]
+        ? `${filled(order[field], order)}`
+        : `${typeof empty == 'function' 
+                  ? empty(order)
+                  : empty}`,
     rules));
 }
 
