@@ -15,7 +15,7 @@ export default function(id, fields, condition) {
     .where({id});
 
   if (condition) {
-    if (typeof condition == 'function')
+    if (typeof condition === 'function')
       condition(q);
     else
       q.andWhere(condition);

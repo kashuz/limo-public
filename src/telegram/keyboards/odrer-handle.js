@@ -11,8 +11,8 @@ export default function(order, cars, car) {
           [[{text: '📍 Показать локацию подачи', callback_data: `location.${order.id}`}]],
         cars && r.map(
           ([cl, cr]) => compact([
-            {text: `${cl.id == car ? '◼️' : '◻️'} ${cl.name}`, callback_data: `car.${order.id}.${cl.id}`}, cr &&
-            {text: `${cr.id == car ? '◼️' : '◻️'} ${cr.name}`, callback_data: `car.${order.id}.${cr.id}`}]),
+            {text: `${cl.id === car ? '◼️' : '◻️'} ${cl.name}`, callback_data: `car.${order.id}.${cl.id}`}, cr &&
+            {text: `${cr.id === car ? '◼️' : '◻️'} ${cr.name}`, callback_data: `car.${order.id}.${cr.id}`}]),
           r.splitEvery(2, cars)),
         [[{text: '✅ Принять', callback_data: `accept.${order.id}`},
           {text: '❌ Отказать', callback_data: `reject.${order.id}`}]]]))}};

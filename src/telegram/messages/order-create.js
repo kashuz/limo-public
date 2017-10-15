@@ -1,6 +1,7 @@
 import r from 'ramda';
 import {format as address} from '../../util/geo';
 import {format as date} from '../../util/date';
+import {format as cost} from '../../util/cost';
 
 const rules = [
   ['location',
@@ -12,12 +13,12 @@ const rules = [
     (category, {car}) => `🔹 ${car || 'Любая машина'} класс: ${category}`],
 
   ['date',
-    '🔸 Дата: не указан',
+    '🔸 Дата: не указана',
     value => `🔹 ${date(value)}`],
 
   ['start_time',
-    '🔸 Время: не указана',
-    (start, {finish_time: finish}) => `🔹 ${start} - ${finish}, ${finish.split(':')[0] - start.split(':')[0]} час(ов)`],
+    '🔸 Время: не указано',
+    (start, {duration}) => `🔹 В ${start} на ${duration} час(а/ов)`],
 
   ['phone_number',
     order => `🔹 Контактный номер: +${order.user.phone_number}`,
@@ -25,14 +26,17 @@ const rules = [
 
   ['payment',
     '🔸 Способ оплаты: не выбран',
-    value => `🔹 ${value === 'payme' ? 'Payme' : 'Наличные'}`]];
+    value => `🔹 ${value === 'payme' ? 'Payme' : 'Наличные'}`],
+
+  ['cost',
+    'Стоимость поездки не известна', value => `${cost(value)} сум`]];
 
 function fields(order) {
   return r.join("\n", r.map(
     ([field, empty, filled]) =>
       order[field]
         ? `${filled(order[field], order)}`
-        : `${typeof empty == 'function' 
+        : `${typeof empty === 'function' 
                   ? empty(order)
                   : empty}`,
     rules));

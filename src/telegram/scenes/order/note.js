@@ -12,7 +12,7 @@ function extra(order) {
       inline_keyboard: compact([
         order.note &&
           [{text: '❌ Удалить заметки', callback_data: 'clear'}],
-        [{text: '⬅ Back', callback_data: 'cancel'}]])}};
+        [{text: '⬅ Назад', callback_data: 'cancel'}]])}};
 }
 
 scene.enter(ctx => ctx.persistent.sendMessage(key,
@@ -34,7 +34,7 @@ scene.on('text', ctx =>
 scene.action('clear', ctx =>
   update(ctx.flow.state.order.id, {note: null})
     .then(order => b.all([
-      ctx.answerCallbackQuery('Комментарии удалены'),
+      ctx.answerCallbackQuery('Комментарий удален'),
       ctx.persistent.deleteMessage(key),
       ctx.flow.enter('order.create', {order})])));
 

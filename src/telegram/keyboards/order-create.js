@@ -15,7 +15,7 @@ export default function(order) {
           {text: '⏰ Время', callback_data: 'start-time'}],
         [{text: `${order.payment === 'payme' ? '◼️' : '◻️'} Payme`, callback_data: 'payment.payme'},
           {text: `${order.payment === 'cash' ? '◼️' : '◻️'} Наличные`, callback_data: 'payment.cash'}],
-        [{text: '📝 Комментарии', callback_data: 'note'}],
+        [{text: '📝 Комментарий', callback_data: 'note'}],
         [{text: '☎️ Контактный номер', callback_data: 'phone-number'}],
         ready(order) &&
           [{text: '✅ Отправить заказ', callback_data: 'submit'}],

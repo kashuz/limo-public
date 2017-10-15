@@ -9,10 +9,10 @@ scene.enter(ctx => ctx.persistent
   .sendMessage(key, 'Выберите время подачи машины', clock()));
 
 scene.action(/time\.(\d+:\d+)/, ctx => ctx
-  .answerCallbackQuery('Время подачи выбрана')
+  .answerCallbackQuery('Время подачи выбрано')
   .then(() => b.all([
     ctx.persistent.deleteMessage(key),
-    ctx.flow.enter('order.finish-time', {
+    ctx.flow.enter('order.duration', {
       order: ctx.flow.state.order,
       start: ctx.match[1]})])));
 

@@ -17,7 +17,7 @@ scene.action('cancel', ctx =>
   ctx.persistent.deleteMessage(key)
     .then(() => ctx.flow.enter('menu')));
 
-scene.use(ctx =>
+scene.use((ctx, next) =>
   ctx.persistent.deleteMessage(key)
     .then(() => translate('plans'))
     .then(text => ctx.persistent.sendMessage(key, text, extra))
