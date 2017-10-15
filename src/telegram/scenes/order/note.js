@@ -1,11 +1,10 @@
 import b from 'bluebird';
 import {Scene} from 'telegraf-flow';
-import action from '../../action';
 import update from '../../../sql/update-order';
 import compact from '../../../util/compact';
 
-const {reply, reset} = action('scene.order.note.message');
 const scene = new Scene('order.note');
+const key = 'scene.order.note.message';
 
 function extra(order) {
   return {
@@ -16,28 +15,33 @@ function extra(order) {
         [{text: '⬅ Back', callback_data: 'cancel'}]])}};
 }
 
-scene.enter(ctx =>
-  reply(ctx, 'Пожалуйста введите комментарий к заказу. Например: свадьба, встреча, аэропорт и т.д. Чем детальнее тем лучше.', extra(ctx.flow.state.order)));
+scene.enter(ctx => ctx.persistent.sendMessage(key,
+  'Пожалуйста введите комментарий к заказу. ' +
+  'Например: свадьба, встреча, аэропорт и т.д. ' +
+  'Чем детальнее тем лучше.',
+  extra(ctx.flow.state.order)));
 
 scene.action('cancel', ctx => b.all([
-  reset(ctx),
+  ctx.persistent.deleteMessage(key),
   ctx.flow.enter('order.create', {order: ctx.flow.state.order})]));
 
 scene.on('text', ctx =>
   update(ctx.flow.state.order.id, {note: ctx.message.text})
     .then(order => b.all([
-      reset(ctx),
+      ctx.persistent.deleteMessage(key),
       ctx.flow.enter('order.create', {order})])));
 
 scene.action('clear', ctx =>
   update(ctx.flow.state.order.id, {note: null})
-    .tap(() => ctx.answerCallbackQuery('Комментарии удалены'))
     .then(order => b.all([
-      reset(ctx),
+      ctx.answerCallbackQuery('Комментарии удалены'),
+      ctx.persistent.deleteMessage(key),
       ctx.flow.enter('order.create', {order})])));
 
 scene.use((ctx, next) =>
-  reply(ctx, 'Пожалуйста введите комментарий к заказу', extra(ctx.flow.state.order))
+  ctx.persistent.deleteMessage(key)
+    .then(() => ctx.persistent.sendMessage(key,
+      'Пожалуйста введите комментарий к заказу', extra(ctx.flow.state.order)))
     .then(() => next()));
 
 export default scene;

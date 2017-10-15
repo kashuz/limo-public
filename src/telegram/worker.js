@@ -2,11 +2,12 @@ import r from 'ramda';
 import b from 'bluebird';
 import {scheduleJob} from 'node-schedule';
 import db from '../db';
-import {update as progress} from './progress';
-import read from '../sql/read-order';
+import progress from './messages/progress';
 import {timeout as clientTimeout} from './scenes/order/await';
 import {timeout as groupTimeout} from './middlewares/group';
 import update from '../sql/update-order';
+import persistent from './persistent';
+import ignore from '../util/ignore';
 
 function seconds(time) {
   return Math.floor((new Date().getTime() - time.getTime()) / 1000);
@@ -19,11 +20,14 @@ export default function(telegram) {
       .andWhere(db.raw('submit_time is not null'))
       .orderBy('id')
       .map(order => {
-        const left = seconds(order.submit_time);
+        const done = seconds(order.submit_time) / process.env.HANDLE_TIMEOUT;
 
-        return left < process.env.HANDLE_TIMEOUT
-          ? progress(telegram, order, process.env.HANDLE_TIMEOUT, left)
-              .catch(() => {}) // ignore outdated updates
+        return done < 1
+          ? persistent(telegram)
+              .editMessageText(`order.${order.id}.progress`, order.user_id, progress(done))
+              .catch(ignore([
+                /message not found/i,
+                /message is not modified/i])) // ignore outdated updates
           : update(order.id, {status: 'timedout'}, {status: 'submitted'}).then(
               order => order && b.all([
                 clientTimeout(telegram, order),

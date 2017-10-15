@@ -1,8 +1,5 @@
 import {Scene} from 'telegraf-flow';
 import translate from '../../translate';
-import action from '../action';
-
-const {reply, reset} = action('scene.plans.message');
 
 const extra = {
   parse_mode: 'html',
@@ -11,17 +8,19 @@ const extra = {
       [{text: '⬅ Назад', callback_data: 'cancel'}]]}};
 
 const scene = new Scene('plans');
+const key = 'scene.plans.message';
 
-scene.enter(ctx =>
-  translate('plans')
-    .then(text => reply(ctx, text, extra)));
+scene.enter(ctx => translate('plans')
+  .then(text => ctx.persistent.sendMessage(key, text, extra)));
 
 scene.action('cancel', ctx =>
-  reset(ctx).then(() => ctx.flow.enter('menu')));
+  ctx.persistent.deleteMessage(key)
+    .then(() => ctx.flow.enter('menu')));
 
 scene.use(ctx =>
-  translate('plans')
-    .then(text => reply(ctx, text, extra))
+  ctx.persistent.deleteMessage(key)
+    .then(() => translate('plans'))
+    .then(text => ctx.persistent.sendMessage(key, text, extra))
     .then(() => next()));
 
 export default scene;

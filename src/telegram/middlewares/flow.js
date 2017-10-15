@@ -6,7 +6,8 @@ import read from '../../sql/read-order';
 
 const flow = new Flow(
   glob.sync(__dirname + '/../scenes/**/*.js').map(
-    file => require(path.resolve(file)).default));
+    file => require(path.resolve(file)).default),
+  {defaultScene: 'register'});
 
 if (process.env.NODE_ENV != 'production') {
   flow.command('menu', ctx =>

@@ -1,7 +1,12 @@
 import r from 'ramda';
+import b from 'bluebird';
+import equal from 'deep-equal';
+import clone from 'clone';
 import db from '../../db';
 
 export default function(ctx, next) {
+  let original;
+
   return !ctx.from
     ? next()
     : db.raw(
@@ -21,9 +26,11 @@ export default function(ctx, next) {
       .then(r.head)
       .then(({session, ...user}) => {
         ctx.user = user;
-        ctx.session = session || {}})
+        ctx.session = clone(original = session || {})})
       .then(() => next())
-      .then(() => db('user')
-        .update({ session: ctx.session })
-        .where({ id: ctx.user.id }));
+      .tap(() => b.resolve(
+          equal(original, ctx.session) ||
+          db('user')
+              .update({ session: ctx.session })
+              .where({ id: ctx.user.id })));
 }

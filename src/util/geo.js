@@ -14,7 +14,9 @@ export default function geo(location) {
     .reverse({lat: location.latitude, lon: location.longitude})
     .then(r.head)
     .then(r.merge(r.__, location))
-    .then(result => enabled(result.city) ? result : b.reject());
+    .then(result => enabled(result.city)
+      ? result
+      : b.reject('Пока заказы принимаются только в Ташкенте'));
 }
 
 export function format(location) {
