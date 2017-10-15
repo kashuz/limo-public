@@ -4,7 +4,7 @@ import message from '../../../messages/order-create';
 import update from '../../../../sql/update-order';
 import read from '../../../../sql/read-order';
 import translate from '../../../../translate';
-import {cancel, complete} from "../../../middlewares/group";
+import {cancel, complete} from '../../../middlewares/group';
 
 const scene = new Scene('order.payment.payme');
 
@@ -41,11 +41,11 @@ scene.action('cancel', ctx =>
       cancel(ctx.telegram, order),
       ctx.flow.enter('menu')])));
 
-scene.on("pre_checkout_query", ctx =>
+scene.on('pre_checkout_query', ctx =>
   read(ctx.preCheckoutQuery.invoice_payload)
     .then(order => ctx.answerPreCheckoutQuery(!!order)));
 
-scene.on("successful_payment", ctx =>
+scene.on('successful_payment', ctx =>
   update(ctx.message.successful_payment.invoice_payload, {status: 'payment_completed', payment_time: new Date()})
     .then(order => b.all([
       ctx.persistent.editMessageText(ord, message(order), {parse_mode: 'html'}),
