@@ -8,6 +8,9 @@
   "private": true,
   "dependencies": {
     "bluebird": "^3.5.1",
+    "clone": "^2.1.1",
+    "debug": "^3.1.0",
+    "deep-equal": "^1.0.1",
     "dotenv": "^4.0.0",
     "glob": "^7.1.2",
     "knex": "^0.13.0",

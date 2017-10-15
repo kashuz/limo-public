@@ -37,7 +37,7 @@ function extra(categories, cars, category, position, prev, next) {
     reply_markup: {
       inline_keyboard: [
         [{text: '◀️', callback_data: `skip.${category}.${cars[prev].id}`},
-         {text: 'Выбрать эту машину', callback_data: `select.${category}.${cars[position].id}`},
+         {text: 'Выбрать', callback_data: `select.${category}.${cars[position].id}`},
          {text: '▶️', callback_data: `skip.${category}.${cars[next].id}`}],
         [{text: '🎲 Любой', callback_data: `random.${category}`}],
         categories.map(c => ({
@@ -76,7 +76,7 @@ scene.enter(ctx => ctx.flow.state.order.category_id
   : intro(ctx));
 
 scene.action('cancel', ctx => b.all([
-  ctx.editMessageReplyMarkup({inline_keyboard: []}),
+  ctx.deleteMessage(),
   ctx.flow.enter('order.create', {order: ctx.flow.state.order})]));
 
 scene.action(/category\.(\d+)/, ctx =>
@@ -91,7 +91,7 @@ scene.action(/select\.(\d+)\.(\d+)/, ctx =>
       car_id: ctx.match[2]})
     .tap(() => ctx.answerCallbackQuery('Машина выбрана'))
     .then(order => b.all([
-      ctx.editMessageReplyMarkup({inline_keyboard: []}),
+      ctx.deleteMessage(),
       ctx.flow.enter('order.create', {order})])));
 
 scene.action(/random\.(\d+)/, ctx =>
@@ -100,7 +100,7 @@ scene.action(/random\.(\d+)/, ctx =>
       car_id: null})
     .tap(() => ctx.answerCallbackQuery('Класс выбран'))
     .then(order => b.all([
-      ctx.editMessageReplyMarkup({inline_keyboard: []}),
+      ctx.deleteMessage(),
       ctx.flow.enter('order.create', {order})])));
 
 scene.use(ctx => intro(ctx));

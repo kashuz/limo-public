@@ -1,5 +1,6 @@
-import TelegrafLogger from 'telegraf-logger';
+const log = require('debug').default('app.telegram');
 
-const logger = new TelegrafLogger();
-
-export default logger;
+export default function(ctx, next) {
+  log(ctx.update);
+  return next();
+};
