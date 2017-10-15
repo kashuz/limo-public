@@ -53,8 +53,8 @@ scene.on("successful_payment", ctx =>
         .then(() => ctx.flow.enter('menu'))])));
 
 scene.use((ctx, next) =>
-  ctx.persistent.deleteMessage(key)
-    .then(() => ctx.persistent.sendMessage(key,
+  ctx.persistent.deleteMessage(cnl)
+    .then(() => ctx.persistent.sendMessage(cnl,
       'Пожалуйста оплатите заказ', extra))
     .then(() => next()));
 export default scene;
