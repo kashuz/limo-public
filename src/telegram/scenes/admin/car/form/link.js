@@ -14,7 +14,7 @@ scene.enter(ctx => ctx.persistent
           [{text: '⏩ Пропустить', callback_data: 'skip'}],
         [{text: '❌ Отмена', callback_data: 'cancel'}]])}}));
 
-scene.hears(/https?:\/\//, ctx => b.all([
+scene.hears(/^https?:\/\/$/, ctx => b.all([
   ctx.persistent.deleteMessage(key),
   ctx.flow.enter('admin.car.form.position', r.assocPath(
     ['car', 'link'], ctx.message.text,

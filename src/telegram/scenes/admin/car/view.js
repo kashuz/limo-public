@@ -1,6 +1,7 @@
 import b from 'bluebird';
 import {Scene} from 'telegraf-flow';
 import db from '../../../../db';
+import outdent from 'outdent';
 
 const scene = new Scene('admin.car.view');
 
@@ -8,7 +9,10 @@ scene.enter(ctx =>
   db('car').where('id', ctx.flow.state.car).first().then(
     car => ctx
       .replyWithPhoto(car.photo, {
-        caption: `${car.position}. ${car.name}\n${car.link}`,
+        caption: outdent`
+          Название: ${car.name}
+          Ссылка: ${car.link}
+          Позиция: ${car.position}`,
         reply_markup: {
           inline_keyboard: [
             [{text: '✏ Изменить', callback_data: 'update'},
