@@ -16,7 +16,7 @@ scene.enter(ctx => ctx.persistent
 
 scene.on('contact', ctx =>
   db('user')
-    .update({phone_number: ctx.message.contact.phone_number})
+    .update({phone_number: ctx.message.contact.phone_number.replace(/\+/g, '')})
     .where({id: ctx.user.id})
     .then(() => b.all([
       ctx.util.removeKeyboard(),
