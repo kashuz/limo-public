@@ -23,7 +23,7 @@ export default function(category, time, duration) {
       return category.twelve_hours_price;
 
     return r.reduce(
-      (cost, hour) => cost + (
+      (cost, h) => cost + (
         h >= hour(process.env.DAY_START) && h < hour(process.env.NIGHT_START)
           ? category.day_hour_price
           : category.night_hour_price),
