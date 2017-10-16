@@ -5,6 +5,7 @@ import update from '../../../../sql/update-order';
 import read from '../../../../sql/read-order';
 import translate from '../../../../translate';
 import {cancel, complete} from '../../../middlewares/group';
+import {payme} from '../../../../util/cost';
 
 const scene = new Scene('order.payment.payme');
 
@@ -14,13 +15,13 @@ const ord = 'scene.order.create.message';
 
 function invoice(order) {
   return {
-    title: 'Оплата заказа',
-    description: `Оплата за заказа №${order.id}`,
+    title: 'Предоплата',
+    description: `Предоплата за заказ №${order.id}`,
     payload: order.id,
     provider_token: process.env.PAYME_TOKEN,
     start_parameter: order.id,
     currency: 'UZS',
-    prices: [{ label: 'Сумма заказа', amount: 140000 * 100 }],
+    prices: [{ label: 'Предоплата заказа', amount: payme(order.cost) }],
     reply_markup: {inline_keyboard: [[{text: '✅ Оплатить', pay: true}]]}};
 }
 

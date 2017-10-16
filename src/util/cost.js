@@ -13,6 +13,10 @@ export function format(value) {
   return formatter.format(value) + ' сум';
 }
 
+export function payme(value) {
+  return Math.ceil(value * 0.15 / 1000) * 1000 * 100;
+}
+
 export default function(category, time, duration) {
   if (category && time && duration) {
     if (duration === 5)
