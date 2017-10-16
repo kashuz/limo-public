@@ -9,11 +9,10 @@ export default function(order, cars, car) {
       inline_keyboard: concat(compact([
         order.location &&
           [[{text: '📍 Показать локацию подачи', callback_data: `location.${order.id}`}]],
-        cars && r.map(
-          ([cl, cr]) => compact([
-            {text: `${cl.id === car ? '◼️' : '◻️'} ${cl.name}`, callback_data: `car.${order.id}.${cl.id}`}, cr &&
-            {text: `${cr.id === car ? '◼️' : '◻️'} ${cr.name}`, callback_data: `car.${order.id}.${cr.id}`}]),
-          r.splitEvery(2, cars)),
+        cars && r.splitEvery(1, r.map(
+          c => ({text: `${c.id === car ? '◼️' : '◻️'} ${c.name}`,
+                 callback_data: `car.${order.id}.${c.id}`}),
+          cars)),
         [[{text: '✅ Принять', callback_data: `accept.${order.id}`},
           {text: '❌ Отказать', callback_data: `reject.${order.id}`}]]]))}};
 }
