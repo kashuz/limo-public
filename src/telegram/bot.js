@@ -19,5 +19,10 @@ bot.use(util);
 bot.use(group);
 bot.use(flow);
 
+bot.catch(e =>
+  console.error(
+    (e.stack || e.toString())
+      .replace(/^/gm, '  ')));
+
 bot.startPolling();
 worker(bot.telegram);

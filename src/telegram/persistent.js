@@ -1,5 +1,6 @@
 import redis from '../cache/redis';
 import assert from '../util/assert';
+import ignore from '../util/ignore';
 
 export default function(telegram, cache = redis) {
   return {
@@ -60,6 +61,7 @@ export default function(telegram, cache = redis) {
     deleteMessage: (key, chat) => cache.get(key)
       .then(assert('deleteMessage: Message not found'))
       .then(message => telegram.deleteMessage(chat, message))
-      .tap(() => cache.del(key)),
+      .tap(() => cache.del(key))
+      .catch(ignore(/message not found/i)),
   }
 }
