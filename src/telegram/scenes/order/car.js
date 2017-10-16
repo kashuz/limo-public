@@ -3,6 +3,7 @@ import r from 'ramda';
 import {Scene} from 'telegraf-flow';
 import db from '../../../db';
 import update from '../../../sql/update-order';
+import extra from '../../keyboards/car';
 
 const scene = new Scene('order.car');
 
@@ -29,28 +30,11 @@ function below(length, index) {
   return index < 0 ? length - 1 : index;
 }
 
-function extra(categories, cars, category, position, prev, next) {
-  return {
-    caption: r.join('\n', [
-      `${cars[position].name} (${position + 1} из ${cars.length})`,
-      `${cars[position].link}`]),
-    reply_markup: {
-      inline_keyboard: [
-        [{text: '◀️', callback_data: `skip.${category}.${cars[prev].id}`},
-         {text: 'Выбрать', callback_data: `select.${category}.${cars[position].id}`},
-         {text: '▶️', callback_data: `skip.${category}.${cars[next].id}`}],
-        [{text: '🎲 Любой', callback_data: `random.${category}`}],
-        categories.map(c => ({
-          text: (category === c.id ? '◼️ ' : '◻️ ') + c.name,
-          callback_data: `category.${c.id}`})),
-        [{text: '⬅ Назад', callback_data: `cancel`}]]}};
-}
-
-function show(ctx, category, car) {
+function show(ctx, category, car, time, duration) {
   return b
     .all([categories(), cars(category)])
     .then(([categories, cars]) => b.all([
-      ctx.deleteMessage().catch(() => {}),
+      ctx.deleteMessage(),
       ctx.replyWithPhoto(
         cars[find(cars, car)].photo,
         extra(
@@ -59,7 +43,9 @@ function show(ctx, category, car) {
           category,
           find(cars, car),
           below(cars.length, find(cars, car) - 1),
-          above(cars.length, find(cars, car) + 1)))]));
+          above(cars.length, find(cars, car) + 1),
+          time,
+          duration))]));
 }
 
 function intro(ctx) {
@@ -72,7 +58,7 @@ function intro(ctx) {
 }
 
 scene.enter(ctx => ctx.flow.state.order.category_id
-  ? show(ctx, ctx.flow.state.order.category_id, ctx.flow.state.order.car_id)
+  ? show(ctx, ctx.flow.state.order.category_id, ctx.flow.state.order.car_id, ctx.flow.state.order.time, ctx.flow.state.order.duration)
   : intro(ctx));
 
 scene.action('cancel', ctx => b.all([
@@ -80,17 +66,17 @@ scene.action('cancel', ctx => b.all([
   ctx.flow.enter('order.create', {order: ctx.flow.state.order})]));
 
 scene.action(/category\.(\d+)/, ctx =>
-  show(ctx, +ctx.match[1], null));
+  show(ctx, +ctx.match[1], null, ctx.flow.state.order.time, ctx.flow.state.order.duration));
 
 scene.action(/skip\.(\d+)\.(\d+)/, ctx =>
-  show(ctx, +ctx.match[1], +ctx.match[2]));
+  show(ctx, +ctx.match[1], +ctx.match[2], ctx.flow.state.order.time, ctx.flow.state.order.duration));
 
 scene.action(/select\.(\d+)\.(\d+)/, ctx =>
   update(ctx.flow.state.order.id, {
       category_id: ctx.match[1],
       car_id: ctx.match[2]})
-    .tap(() => ctx.answerCallbackQuery('Машина выбрана'))
     .then(order => b.all([
+      ctx.answerCallbackQuery('Машина выбрана'),
       ctx.deleteMessage(),
       ctx.flow.enter('order.create', {order})])));
 
@@ -98,8 +84,8 @@ scene.action(/random\.(\d+)/, ctx =>
   update(ctx.flow.state.order.id, {
       category_id: ctx.match[1],
       car_id: null})
-    .tap(() => ctx.answerCallbackQuery('Класс выбран'))
     .then(order => b.all([
+      ctx.answerCallbackQuery('Класс выбран'),
       ctx.deleteMessage(),
       ctx.flow.enter('order.create', {order})])));
 

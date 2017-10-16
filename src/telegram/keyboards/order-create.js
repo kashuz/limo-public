@@ -1,7 +1,11 @@
 import compact from '../../util/compact';
 
 function ready(order) {
-  return order.category_id && order.date && order.start_time && order.finish_time && order.payment;
+  return order.category_id
+    && order.date
+    && order.time
+    && order.duration
+    && order.payment;
 }
 
 export default function(order) {
@@ -12,9 +16,9 @@ export default function(order) {
         [{text: '📍 Адрес подачи', callback_data: 'location'},
          {text: '🚗 Машина', callback_data: 'car'}],
         [{text: '🗓 Дата', callback_data: 'date'},
-          {text: '⏰ Время', callback_data: 'start-time'}],
+         {text: '⏰ Время', callback_data: 'time'}],
         [{text: `${order.payment === 'payme' ? '◼️' : '◻️'} Payme`, callback_data: 'payment.payme'},
-          {text: `${order.payment === 'cash' ? '◼️' : '◻️'} Наличные`, callback_data: 'payment.cash'}],
+         {text: `${order.payment === 'cash' ? '◼️' : '◻️'} Наличные`, callback_data: 'payment.cash'}],
         [{text: '📝 Комментарий', callback_data: 'note'},
          {text: '☎️ Номер', callback_data: 'phone-number'}],
         ready(order) &&

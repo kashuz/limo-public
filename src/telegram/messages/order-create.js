@@ -2,23 +2,24 @@ import r from 'ramda';
 import {format as address} from '../../util/geo';
 import {format as date} from '../../util/date';
 import {format as cost} from '../../util/cost';
+import plural from '../../util/plural';
 
 const rules = [
   ['location',
     '🔸 Адрес: не указан',
     value => `🔹 ${address(value)}`],
 
-  ['category',
+  ['category_id',
     '🔸 Машина: не выбрана',
-    (category, {car}) => `🔹 ${car || 'Любая машина'} класс: ${category}`],
+    (_, {category, car}) => `🔹 ${car || 'Любая машина'} класс: ${category.name}`],
 
   ['date',
     '🔸 Дата: не указана',
     value => `🔹 ${date(value)}`],
 
-  ['start_time',
+  ['time',
     '🔸 Время: не указано',
-    (start, {duration}) => `🔹 В ${start} на ${duration} час(а/ов)`],
+    (start, {duration}) => `🔹 В ${start} на ${duration} ${plural(duration, 'час', 'часа', 'часов')}`],
 
   ['phone_number',
     order => `🔹 Контактный номер: +${order.user.phone_number}`,
@@ -29,7 +30,7 @@ const rules = [
     value => `🔹 ${value === 'payme' ? 'Payme' : 'Наличные'}`],
 
   ['cost',
-    'Стоимость поездки не известна', value => `${cost(value)} сум`]];
+    '🔸 Стоимость поездки не известна', value => `🔹 ${cost(value)} сум`]];
 
 function fields(order) {
   return r.join("\n", r.map(
@@ -48,13 +49,13 @@ function note(order) {
 
 function status(order) {
   return {
-    submitted: ' (submitted)',
-    cancelled: ' (cancelled)',
-    accepted: ' (accepted)',
-    rejected: ' (rejected)',
-    timedout: ' (timed out)',
-    payment_cancelled: ' (payment cancelled)',
-    payment_completed: ' (completed)',
+    submitted: ' (отправлен)',
+    cancelled: ' (отменен)',
+    accepted: ' (принят)',
+    rejected: ' (отклонен)',
+    timedout: ' (просрочен)',
+    payment_cancelled: ' (платеж отменен)',
+    payment_completed: ' (успешно)',
   }[order.status] || ''
 }
 

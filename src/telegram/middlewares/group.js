@@ -37,7 +37,7 @@ const composer = new Composer();
 composer.action(/location\.(\d+)/, ctx =>
   read(ctx.match[1])
     .then(order => b.all([
-      ctx.answerCallbackQuery().catch(() => {}),
+      ctx.answerCallbackQuery(),
       ctx.replyWithVenue(order.location.latitude, order.location.longitude, `Геолокация заказа №${order.id}`, address(order.location))])));
 
 composer.action(/car\.(\d+)\.(\d+)/, ctx =>
@@ -66,8 +66,7 @@ composer.action(/reject\.(\d+)/, ctx =>
       reject(ctx.telegram, order),
       ctx.reply(`ℹ️ ${format(ctx.from)} #rejected order №${order.id}`),
       ctx.editMessageText(message(order), {parse_mode: 'html'})]))
-    .catch(error => ctx.answerCallbackQuery(error + ''))
-    .catch(() => {}));
+    .catch(error => ctx.answerCallbackQuery(error + '')));
 
 
 const group = composer.middleware();

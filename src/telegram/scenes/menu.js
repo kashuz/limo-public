@@ -14,7 +14,7 @@ const extra = admin => ({
       [{text: '📔 Мои заказы', callback_data: 'history'}],
       [{text: '☎️ Изменить номер ', callback_data: 'phone-number'}],
       admin &&
-        [{text: '⚙️ Администрирование', callback_data: 'admin'}]])}});
+        [{text: '⚙️ Админ', callback_data: 'admin'}]])}});
 
 scene.enter(ctx => ctx.persistent
   .sendMessage(key, 'Главное меню', extra(ctx.user.admin)));

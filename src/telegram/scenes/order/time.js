@@ -2,8 +2,8 @@ import b from 'bluebird';
 import {Scene} from 'telegraf-flow';
 import clock from '../../keyboards/clock';
 
-const scene = new Scene('order.start-time');
-const key = 'scene.order.start-time.message';
+const scene = new Scene('order.time');
+const key = 'scene.order.time.message';
 
 scene.enter(ctx => ctx.persistent
   .sendMessage(key, 'Выберите время подачи машины', clock()));

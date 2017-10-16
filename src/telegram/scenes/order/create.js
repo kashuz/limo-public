@@ -11,7 +11,7 @@ const key = 'scene.order.create.message';
 scene.enter(ctx => ctx.persistent
   .sendMessage(key, message(ctx.flow.state.order), extra(ctx.flow.state.order)));
 
-scene.action(/(car|date|note|location|start-time|phone-number)/, ctx => b.all([
+scene.action(/(car|date|note|location|time|phone-number)/, ctx => b.all([
   ctx.persistent.deleteMessage(key),
   ctx.flow.enter(`order.${ctx.match[1]}`, {order: ctx.flow.state.order})]));
 
