@@ -19,6 +19,7 @@
     "node-calendar": "^0.1.4",
     "node-geocoder": "^3.21.0",
     "node-schedule": "^1.2.5",
+    "outdent": "^0.3.0",
     "pg": "^7.3.0",
     "ramda": "^0.24.1",
     "ramdasauce": "^2.1.0",
