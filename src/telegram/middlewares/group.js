@@ -98,7 +98,7 @@ export function timeout(telegram, order) {
 
 export function complete(telegram, order) {
   return b.all([
-    telegram.sendMessage(process.env.GROUP_ID, `ℹ️ Order №${order.id} payment #completed`),
+    telegram.sendMessage(process.env.GROUP_ID, `ℹ️ Order №${order.id} #payment_completed`),
     persistent(telegram).editMessageText(
       `order.${order.id}.message`, process.env.GROUP_ID,
       message(order), {parse_mode: 'html'})]);
@@ -106,7 +106,7 @@ export function complete(telegram, order) {
 
 export function cancel(telegram, order) {
   return b.all([
-    telegram.sendMessage(process.env.GROUP_ID, `⚠️ Order №${order.id} payment #cancelled`),
+    telegram.sendMessage(process.env.GROUP_ID, `⚠️ Order №${order.id} #payment_cancelled`),
     persistent(telegram).editMessageText(
       `order.${order.id}.message`, process.env.GROUP_ID,
       message(order), {parse_mode: 'html'})]);
