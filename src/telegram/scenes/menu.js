@@ -11,8 +11,8 @@ const extra = admin => ({
     inline_keyboard: compact([
       [{text: '🚘 Сделать заказ', callback_data: 'order'}],
       [{text: '🏷 Тарифы', callback_data: 'plans'}],
-      [{text: '📔 Мои заказы', callback_data: 'history'}],
-      [{text: '☎️ Изменить номер ', callback_data: 'phone-number'}],
+      // [{text: '📔 Мои заказы', callback_data: 'history'}],
+      // [{text: '☎️ Изменить номер ', callback_data: 'phone-number'}],
       admin &&
         [{text: '⚙️ Админ', callback_data: 'admin'}]])}});
 
