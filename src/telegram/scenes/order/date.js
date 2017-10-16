@@ -25,7 +25,7 @@ scene.action(/day\.(\d+)\.(\d+)\.(\d+)/, ctx =>
       ctx.flow.enter('order.create', {order})])));
 
 scene.action('noop', ctx =>
-  ctx.answerCallbackQuery('Пожалуйста выберите правильную дату'));
+  ctx.answerCallbackQuery('Пожалуйста выберите дату'));
 
 scene.action('cancel', ctx => b.all([
   ctx.persistent.deleteMessage(key),
