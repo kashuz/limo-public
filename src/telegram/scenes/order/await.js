@@ -8,6 +8,7 @@ import session from '../../../cache/session';
 import ignore from '../../../util/ignore';
 import update from '../../../sql/update-order';
 import {submit} from '../../middlewares/group';
+import botan from "../../botan";
 
 const scene = new Scene('order.await');
 
@@ -38,43 +39,44 @@ const extra = status => ({
   accepted: forward,
   rejected: back}[status]);
 
-scene.enter(ctx => persistent(ctx.telegram)
-  .sendMessage(`order.${ctx.flow.state.order.id}.progress`,
-    ctx.flow.state.order.user_id, progress(0)));
+scene.enter(botan('order:await:enter',
+  ctx => persistent(ctx.telegram)
+    .sendMessage(`order.${ctx.flow.state.order.id}.progress`,
+      ctx.flow.state.order.user_id, progress(0))));
 
-scene.action('menu', ctx => b.all([
-  ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
-  ctx.flow.enter('menu')]));
+scene.action('menu', botan('order:await:menu',
+  ctx => b.all([
+    ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
+    ctx.flow.enter('menu')])));
 
-scene.action('payment', ctx => b.all([
-  ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
-  ctx.flow.enter(
-    `order.payment.${ctx.flow.state.order.payment}`,
-    {order: ctx.flow.state.order})]));
+scene.action('payment', botan('order:await:payment',
+  ctx => b.all([
+    ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
+    ctx.flow.enter(
+      `order.payment.${ctx.flow.state.order.payment}`,
+      {order: ctx.flow.state.order})])));
 
-scene.action('retry', ctx =>
-  update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
+scene.action('retry', botan('order:await:retry',
+  ctx => update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
     .tap(order => b.all([
       ctx.answerCallbackQuery('Заказ отправлен'),
       ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
-      ctx.persistent.editMessageText('scene.order.create.message', message(order), {parse_mode: 'html'}),
+      ctx.persistent.editMessageText('scene.order.menu.message', message(order), {parse_mode: 'html'}),
       submit(ctx.telegram, order)]))
-    .then(order => ctx.flow.enter('order.await', {order})));
+    .then(order => ctx.flow.enter('order.await', {order}))));
 
-scene.use((ctx, next) =>
-  (ctx.flow.state.order.status == 'submitted'
+scene.use(botan('order:await:default',
+  (ctx, next) => (ctx.flow.state.order.status == 'submitted'
       ? persistent(ctx.telegram)
           .deleteMessage(`order.${ctx.flow.state.order.id}.progress`, ctx.flow.state.order.user_id)
-          .catch(ignore(/message not found/i))
           .then(() => persistent(ctx.telegram)
             .sendMessage(`order.${ctx.flow.state.order.id}.progress`,
               ctx.flow.state.order.user_id, progress(0)))
       : ctx.persistent.deleteMessage(key(ctx.flow.state.order.status))
-          .catch(ignore(/message not found/i))
           .then(() => translate(text(ctx.flow.state.order.status)))
           .then(text => ctx.persistent.sendMessage(
             key(ctx.flow.state.order.status), text, extra(ctx.flow.state.order.status))))
-    .then(() => next()));
+    .then(() => next())));
 
 export default scene;
 
@@ -85,7 +87,7 @@ export function timeout(telegram, order) {
     persistent(telegram)
       .deleteMessage(`order.${order.id}.progress`, order.user_id),
     persistent(telegram, session(order.user_id))
-      .editMessageText('scene.order.create.message',
+      .editMessageText('scene.order.menu.message',
         order.user_id, message(order), {parse_mode: 'html'}),
     translate(text('timedout')).then(text =>
       persistent(telegram, session(order.user_id))
@@ -99,7 +101,7 @@ export function accept(telegram, order) {
     persistent(telegram)
       .deleteMessage(`order.${order.id}.progress`, order.user_id),
     persistent(telegram, session(order.user_id))
-      .editMessageText('scene.order.create.message',
+      .editMessageText('scene.order.menu.message',
         order.user_id, message(order), {parse_mode: 'html'}),
     translate(text('accepted')).then(text =>
       persistent(telegram, session(order.user_id))
@@ -113,7 +115,7 @@ export function reject(telegram, order) {
     persistent(telegram)
       .deleteMessage(`order.${order.id}.progress`, order.user_id),
     persistent(telegram, session(order.user_id))
-      .editMessageText('scene.order.create.message',
+      .editMessageText('scene.order.menu.message',
         order.user_id, message(order), {parse_mode: 'html'}),
     translate(text('rejected')).then(text =>
       persistent(telegram, session(order.user_id))

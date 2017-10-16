@@ -1,29 +1,33 @@
 import b from 'bluebird';
 import {Scene} from 'telegraf-flow';
 import extra from '../../keyboards/clock';
+import botan from "../../botan";
 
 const scene = new Scene('order.time');
 const key = 'scene.order.time.message';
 
-scene.enter(ctx => ctx.persistent
-  .sendMessage(key, 'Выберите время подачи машины', extra));
+scene.enter(botan('order:time:enter',
+  ctx => ctx.persistent
+    .sendMessage(key, 'Выберите время подачи машины', extra)));
 
-scene.action(/time\.(\d+:\d+)/, ctx => ctx
-  .answerCallbackQuery('Время подачи выбрано')
-  .then(() => b.all([
+scene.action(/time\.(\d+:\d+)/, botan('order:time:time',
+  ctx => b.all([
+    ctx.answerCallbackQuery('Время подачи выбрано'),
     ctx.persistent.deleteMessage(key),
     ctx.flow.enter('order.duration', {
       order: ctx.flow.state.order,
       start: ctx.match[1]})])));
 
-scene.action('cancel', ctx => b.all([
-  ctx.persistent.deleteMessage(key),
-  ctx.flow.enter('order.create', {order: ctx.flow.state.order})]));
+scene.action('cancel', botan('order:time:cancel',
+  ctx => b.all([
+    ctx.persistent.deleteMessage(key),
+    ctx.flow.enter('order.menu', {order: ctx.flow.state.order})])));
 
-scene.use((ctx, next) =>
-  ctx.persistent.deleteMessage(key)
-    .then(() => ctx.persistent.sendMessage(key,
-      'Выберите время подачи машины', extra))
-    .then(() => next()));
+scene.use(botan('order:time:default',
+  (ctx, next) =>
+    ctx.persistent.deleteMessage(key)
+      .then(() => ctx.persistent.sendMessage(key,
+        'Выберите время подачи машины', extra))
+      .then(() => next())));
 
 export default scene;

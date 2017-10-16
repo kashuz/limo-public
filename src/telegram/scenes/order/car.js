@@ -6,6 +6,7 @@ import db from '../../../db';
 import update from '../../../sql/update-order';
 import {initial, full} from '../../keyboards/car';
 import cost from '../../../util/cost';
+import botan from "../../botan";
 
 const scene = new Scene('order.car');
 const key = 'order.car.message';
@@ -46,64 +47,66 @@ function prepare(category, car, time, duration) {
         cost(category, time, duration))]);
 }
 
-scene.enter(ctx => ctx.flow.state.order.category_id
-  ? prepare(
-        ctx.flow.state.order.category_id,
-        ctx.flow.state.order.car_id || 0,
-        ctx.flow.state.order.time,
-        ctx.flow.state.order.duration)
+scene.enter(botan('order:car:enter',
+  ctx => ctx.flow.state.order.category_id
+    ? prepare(
+      ctx.flow.state.order.category_id,
+      ctx.flow.state.order.car_id || 0,
+      ctx.flow.state.order.time,
+      ctx.flow.state.order.duration)
       .tap(() => ctx.persistent.deleteMessage(key))
       .then(([photo, extra]) =>
         ctx.persistent.sendPhoto(key, photo, extra))
-  : categories().then(categories =>
+    : categories().then(categories =>
       ctx.persistent.sendMessage(key,
-        'Пожалуйста выберите класс', initial(categories))));
+        'Пожалуйста выберите класс', initial(categories)))));
 
-scene.action('cancel', ctx => b.all([
-  ctx.persistent.deleteMessage(key),
-  ctx.flow.enter('order.create', {order: ctx.flow.state.order})]));
+scene.action('cancel', botan('order:car:cancel',
+  ctx => b.all([
+    ctx.persistent.deleteMessage(key),
+    ctx.flow.enter('order.menu', {order: ctx.flow.state.order})])));
 
-scene.action(/category\.(\d+)/, ctx =>
-  prepare(
+scene.action(/category\.(\d+)/, botan('order:car:category',
+  ctx => prepare(
       +ctx.match[1], 0,
       ctx.flow.state.order.time,
       ctx.flow.state.order.duration)
     .tap(() => ctx.persistent.deleteMessage(key))
     .then(([photo, extra]) =>
-      ctx.persistent.sendPhoto(key, photo, extra)));
+      ctx.persistent.sendPhoto(key, photo, extra))));
 
-scene.action(/skip\.(\d+)\.(\d+)/, ctx =>
-  prepare(
+scene.action(/skip\.(\d+)\.(\d+)/, botan('order:car:skip',
+  ctx => prepare(
       +ctx.match[1], +ctx.match[2],
       ctx.flow.state.order.time,
       ctx.flow.state.order.duration)
     .tap(() => ctx.persistent.deleteMessage(key))
     .then(([photo, extra]) =>
-      ctx.persistent.sendPhoto(key, photo, extra)));
+      ctx.persistent.sendPhoto(key, photo, extra))));
 
-scene.action(/select\.(\d+)\.(\d+)/, ctx =>
-  update(ctx.flow.state.order.id, {
-    category_id: ctx.match[1],
-    car_id: ctx.match[2]})
-  .then(order => b.all([
-    ctx.answerCallbackQuery('Машина выбрана'),
-    ctx.persistent.deleteMessage(key),
-    ctx.flow.enter('order.create', {order})])));
+scene.action(/select\.(\d+)\.(\d+)/, botan('order:car:select',
+  ctx => update(ctx.flow.state.order.id, {
+      category_id: ctx.match[1],
+      car_id: ctx.match[2]})
+    .then(order => b.all([
+      ctx.answerCallbackQuery('Машина выбрана'),
+      ctx.persistent.deleteMessage(key),
+      ctx.flow.enter('order.menu', {order})]))));
 
-scene.action(/random\.(\d+)/, ctx =>
-  update(ctx.flow.state.order.id, {
+scene.action(/random\.(\d+)/, botan('order:car:random',
+  ctx => update(ctx.flow.state.order.id, {
       category_id: ctx.match[1],
       car_id: null})
     .then(order => b.all([
       ctx.answerCallbackQuery('Класс выбран'),
       ctx.persistent.deleteMessage(key),
-      ctx.flow.enter('order.create', {order})])));
+      ctx.flow.enter('order.menu', {order})]))));
 
-scene.use((ctx, next) =>
-  ctx.persistent.deleteMessage(key)
+scene.use(botan('order:car:default',
+  (ctx, next) => ctx.persistent.deleteMessage(key)
     .then(categories)
     .then(categories => ctx.persistent.sendMessage(key,
       'Пожалуйста выберите класс', initial(categories)))
-    .then(() => next()));
+    .then(() => next())));
 
 export default scene;

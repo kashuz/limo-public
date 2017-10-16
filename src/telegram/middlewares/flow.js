@@ -21,7 +21,7 @@ if (process.env.NODE_ENV != 'production') {
   flow.command('order', ctx =>
     r.last(ctx.message.text.split(' ')) &&
       read(r.last(ctx.message.text.split(' ')))
-        .then(order => ctx.flow.enter('order.create', {order})));
+        .then(order => ctx.flow.enter('order.menu', {order})));
 }
 
 export default flow;
