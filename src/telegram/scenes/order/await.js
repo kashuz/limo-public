@@ -48,7 +48,9 @@ scene.action('menu', ctx => b.all([
 
 scene.action('payment', ctx => b.all([
   ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
-  ctx.flow.enter('order.payment.payme', {order: ctx.flow.state.order})]));
+  ctx.flow.enter(
+    `order.payment.${ctx.flow.state.order.payment}`,
+    {order: ctx.flow.state.order})]));
 
 scene.action('retry', ctx =>
   update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
