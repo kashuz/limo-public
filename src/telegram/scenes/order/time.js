@@ -1,12 +1,12 @@
 import b from 'bluebird';
 import {Scene} from 'telegraf-flow';
-import clock from '../../keyboards/clock';
+import extra from '../../keyboards/clock';
 
 const scene = new Scene('order.time');
 const key = 'scene.order.time.message';
 
 scene.enter(ctx => ctx.persistent
-  .sendMessage(key, 'Выберите время подачи машины', clock()));
+  .sendMessage(key, 'Выберите время подачи машины', extra));
 
 scene.action(/time\.(\d+:\d+)/, ctx => ctx
   .answerCallbackQuery('Время подачи выбрано')
@@ -23,7 +23,7 @@ scene.action('cancel', ctx => b.all([
 scene.use((ctx, next) =>
   ctx.persistent.deleteMessage(key)
     .then(() => ctx.persistent.sendMessage(key,
-      'Выберите время подачи машины', clock()))
+      'Выберите время подачи машины', extra))
     .then(() => next()));
 
 export default scene;
