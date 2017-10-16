@@ -5,14 +5,13 @@ const hour = r.memoize(r.pipe(
   r.head,
   r.inc));
 
-export const format = r.memoize(r.pipe(
-  r.toString(),
-  r.split(''),
-  r.reverse(),
-  r.splitEvery(3),
-  r.map(r.pipe(r.reverse(), r.join(''))),
-  r.reverse(),
-  r.join(' ')));
+const formatter = new Intl.NumberFormat('ru-RU', {
+  style: 'decimal',
+  minimumFractionDigits: 0});
+
+export function format(value) {
+  return formatter.format(value) + ' сум';
+}
 
 export default function(category, time, duration) {
   if (category && time && duration) {
