@@ -9,6 +9,11 @@ const flow = new Flow(
     file => require(path.resolve(file)).default),
   {defaultScene: 'register'});
 
+flow.use((ctx, next) =>
+  ctx.user.phone_number || ctx.flow.current.id == 'register'
+    ? next()
+    : ctx.flow.enter('register'));
+
 if (process.env.NODE_ENV != 'production') {
   flow.command('menu', ctx =>
     ctx.flow.enter('menu'));
