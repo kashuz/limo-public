@@ -22,6 +22,12 @@ Telegram.prototype.editMessageText = function(...args) {
     .catch(ignore(/message is not modified/i));
 };
 
+const editMessageReplyMarkup = Telegram.prototype.editMessageReplyMarkup;
+Telegram.prototype.editMessageReplyMarkup = function(...args) {
+  return editMessageReplyMarkup.call(this, ...args)
+    .catch(ignore(/message is not modified/i));
+};
+
 const deleteMessage = Telegram.prototype.deleteMessage;
 Telegram.prototype.deleteMessage = function(...args) {
   return deleteMessage.call(this, ...args)
