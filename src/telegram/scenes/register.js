@@ -16,6 +16,12 @@ scene.enter(botan('register:enter',
     .sendMessage(key,
       'Пожалуйста отправьте номер телефона', extra)));
 
+scene.hears(/^\/start (.+)/, botan('register:start',
+  (ctx, next) => db('user')
+    .update({source: ctx.match[1]})
+    .where('id', ctx.user.id)
+    .then(() => next())));
+
 scene.on('contact', botan('register:contact',
   ctx => db('user')
     .update({phone_number: ctx.message.contact.phone_number.replace(/\+/g, '')})
