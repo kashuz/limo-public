@@ -9,6 +9,7 @@ scene.enter(ctx => ctx
       inline_keyboard: [
         [{text: 'Машины', callback_data: 'car'}],
         [{text: 'Классы', callback_data: 'category'}],
+        [{text: 'Тексты', callback_data: 'translation'}],
         [{text: '⬅ Назад', callback_data: 'back'}]]}}));
 
 scene.action('car', ctx => b.all([
@@ -18,6 +19,10 @@ scene.action('car', ctx => b.all([
 scene.action('category', ctx => b.all([
   ctx.deleteMessage(),
   ctx.flow.enter('admin.category.index')]));
+
+scene.action('translation', ctx => b.all([
+  ctx.deleteMessage(),
+  ctx.flow.enter('admin.translation.index')]));
 
 scene.action('back', ctx => b.all([
   ctx.deleteMessage(),
