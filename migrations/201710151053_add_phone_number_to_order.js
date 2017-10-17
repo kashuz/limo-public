@@ -1,7 +1,7 @@
 
 module.exports.up = async (db) => {
   await db.schema.table('order', table => {
-    table.string('phone_number', true);
+    table.string('phone_number');
   })
 };
 

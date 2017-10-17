@@ -1,7 +1,7 @@
 
 module.exports.up = async (db) => {
   await db.schema.table('category', table => {
-    table.integer('position', true).defaultTo(0);
+    table.integer('position').defaultTo(0);
   })
 };
 

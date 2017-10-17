@@ -1,14 +1,15 @@
 
 module.exports.up = async (db) => {
   await db.schema.table('user', table => {
-    table.boolean('admin').defaultTo(false);
+    table.timestamp('create_time', true);
   })
 };
 
 module.exports.down = async (db) => {
   await db.schema.table('user', table => {
-    table.dropColumn('admin');
+    table.dropColumn('create_time');
   })
 };
+
 
 module.exports.configuration = { transaction: true };

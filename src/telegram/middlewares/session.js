@@ -10,8 +10,8 @@ export default function(ctx, next) {
   return !ctx.from
     ? next()
     : db.raw(
-        `insert into "user" (id, first_name, last_name, username, language_code)
-         values(:id, :first_name, :last_name, :username, :language_code)
+        `insert into "user" (id, first_name, last_name, username, language_code, create_time)
+         values(:id, :first_name, :last_name, :username, :language_code, :create_time)
          on conflict (id) do update set
            first_name = :first_name,
            last_name = :last_name,
@@ -21,7 +21,8 @@ export default function(ctx, next) {
          first_name: ctx.from.first_name || null,
          last_name: ctx.from.last_name || null,
          username: ctx.from.username || null,
-         language_code: ctx.from.language_code || null})
+         language_code: ctx.from.language_code || null,
+         create_time: new Date()})
       .then(r.prop('rows'))
       .then(r.head)
       .then(({session, ...user}) => {
