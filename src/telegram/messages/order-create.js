@@ -12,7 +12,7 @@ const rules = [
 
   ['category_id',
     '🔸 Машина: не выбрана',
-    (_, {category, car}) => `🔹 ${car || 'Любая машина'} класса ${category.name}`],
+    (_, {category, car}) => `🔹 ${car ? `${car} класс: ${category.name}` : `Любая машина класса ${category.name}`}`],
 
   ['date',
     '🔸 Дата: не указана',

@@ -13,7 +13,7 @@ export default function(order) {
     Заказ <b>№${order.id}</b>
     
     🔹 Адрес: ${order.location ? address(order.location) : 'не указан'}
-    🔹 Машина: ${order.car || 'Любая машина'} класса ${order.category.name}
+    🔹 Машина: ${order.car ? `${order.car} класс: ${order.category.name}` : `Любая машина класса ${order.category.name}`}
     🔹 Дата: ${date(order.date)}
     🔹 Время: В ${order.time} на ${order.duration} ${plural(order.duration, 'час', 'часа', 'часов')}
     🔹 Стоимость: ${cost(order.cost)}
