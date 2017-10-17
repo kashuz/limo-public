@@ -3,6 +3,7 @@ import b from 'bluebird';
 import Composer from 'telegraf';
 import update from '../../sql/update-order';
 import message from '../messages/order-submit';
+import mini from '../messages/order-mini';
 import read from '../../sql/read-order';
 import {format as address} from '../../util/geo';
 import extra from '../keyboards/odrer-handle';
@@ -39,6 +40,12 @@ composer.action(/location\.(\d+)/, ctx =>
     .then(order => b.all([
       ctx.answerCallbackQuery(),
       ctx.replyWithVenue(order.location.latitude, order.location.longitude, `Геолокация заказа №${order.id}`, address(order.location))])));
+
+composer.action(/mini\.(\d+)/, ctx =>
+  read(ctx.match[1])
+    .then(order => b.all([
+      ctx.answerCallbackQuery(),
+      ctx.reply(mini(order), {parse_mode: 'html'})])));
 
 composer.action(/car\.(\d+)\.(\d+)/, ctx =>
   read(ctx.match[1])

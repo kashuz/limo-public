@@ -12,18 +12,6 @@ import botan from "../../botan";
 
 const scene = new Scene('order.await');
 
-const back = {
-  parse_mode: 'html',
-  reply_markup: {
-    inline_keyboard: [
-      [{text: '🔁 Отправить заново', callback_data: 'retry'}],
-      [{text: '➡ Главное меню', callback_data: 'menu'}]]}};
-
-const forward = {
-  parse_mode: 'html',
-  reply_markup: {
-    inline_keyboard: [[{text: '➡ Перейти к оплате', callback_data: 'payment'}]]}};
-
 const key = status => ({
   timedout: 'scene.order.await.timeout',
   accepted: 'scene.order.await.accept',
@@ -35,9 +23,22 @@ const text = status => ({
   rejected: 'order_reject'}[status]);
 
 const extra = status => ({
-  timedout: back,
-  accepted: forward,
-  rejected: back}[status]);
+  timedout: {
+    parse_mode: 'html',
+    reply_markup: {
+      inline_keyboard: [
+        [{text: '🔁 Отправить заново', callback_data: 'retry'}],
+        [{text: '➡ Главное меню', callback_data: 'menu'}]]}},
+  accepted: {
+    parse_mode: 'html',
+    reply_markup: {
+      inline_keyboard: [
+        [{text: '➡ Перейти к оплате', callback_data: 'payment'}]]}},
+  rejected: {
+    parse_mode: 'html',
+    reply_markup: {
+      inline_keyboard: [
+        [{text: '➡ Главное меню', callback_data: 'menu'}]]}}}[status]);
 
 scene.enter(botan('order:await:enter',
   ctx => persistent(ctx.telegram)

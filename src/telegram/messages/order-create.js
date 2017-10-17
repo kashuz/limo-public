@@ -20,7 +20,7 @@ const rules = [
 
   ['time',
     '🔸 Время: не указано',
-    (start, {duration}) => `🔹 В ${start} на ${duration} ${plural(duration, 'час', 'часа', 'часов')}`],
+    (time, {duration}) => `🔹 В ${time} на ${duration} ${plural(duration, 'час', 'часа', 'часов')}`],
 
   ['phone_number',
     order => `🔹 Контактный номер: +${order.user.phone_number}`,
@@ -42,10 +42,6 @@ function fields(order) {
                   ? empty(order)
                   : empty}`,
     rules));
-}
-
-function note(order) {
-  return order.note ? `Notes: <i>${order.note}</i>` : ''
 }
 
 function status(order) {
@@ -84,9 +80,10 @@ export function errors(order) {
 }
 
 export default function(order) {
-  return `Order <b>№${order.id}</b>${status(order)}
+  return outdent`
+    Заказ <b>№${order.id}</b>${status(order)}
 
-${fields(order)}
+    ${fields(order)}
 
-${note(order)}`
+    ${order.note ? `Комментарий: <i>${order.note}</i>` : ''}`
 }

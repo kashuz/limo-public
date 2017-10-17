@@ -6,7 +6,7 @@ import concat from '../../../../util/concat';
 
 const scene = new Scene('admin.translation.index');
 
-scene.enter(ctx => db('translation').orderBy('text').then(
+scene.enter(ctx => db('translation').orderBy('id').then(
   translations => ctx
     .reply('Выберите текст', {
       reply_markup: {

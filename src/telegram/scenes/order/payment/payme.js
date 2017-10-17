@@ -32,7 +32,7 @@ const extra = {
 
 scene.enter(botan('order:payment:payme:enter',
   ctx => ctx.persistent.sendInvoice(inv, invoice(ctx.flow.state.order))
-    .then(() => ctx.persistent.sendMessage(cnl, 'Пожалуйста оплатите заказ', extra))));
+    .then(() => ctx.persistent.sendMessage(cnl, 'Пожалуйста оплатите 15% от суммы заказа', extra))));
 
 scene.action('cancel', botan('order:payment:payme:cancel',
   ctx => update(ctx.flow.state.order.id, {status: 'payment_cancelled', payment_time: new Date()})
