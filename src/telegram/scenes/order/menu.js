@@ -1,7 +1,7 @@
 import b from 'bluebird';
 import {Scene} from 'telegraf-flow';
 import update from '../../../sql/update-order';
-import message from '../../messages/order-create';
+import message, {errors} from '../../messages/order-create';
 import extra from '../../keyboards/order-create';
 import {submit} from '../../middlewares/group';
 import botan from "../../botan";
@@ -57,12 +57,14 @@ scene.action('cancel', botan('order:menu:cancel',
       ctx.flow.enter('menu')]))));
 
 scene.action('submit', botan('order:menu:submit',
-  ctx => update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
-    .tap(order => b.all([
-      ctx.answerCallbackQuery('Заказ отправлен'),
-      ctx.persistent.editMessageText(key, message(order), {parse_mode: 'html'}),
-      submit(ctx.telegram, order)]))
-    .then(order => ctx.flow.enter('order.await', {order}))));
+  ctx => errors(ctx.flow.state.order)
+    ? ctx.answerCallbackQuery(errors(ctx.flow.state.order), undefined, true)
+    : update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
+        .tap(order => b.all([
+          ctx.answerCallbackQuery('Заказ отправлен'),
+          ctx.persistent.editMessageText(key, message(order), {parse_mode: 'html'}),
+          submit(ctx.telegram, order)]))
+        .then(order => ctx.flow.enter('order.await', {order}))));
 
 scene.use(botan('order:menu:default',
   (ctx, next) =>

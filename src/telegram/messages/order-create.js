@@ -3,6 +3,7 @@ import {format as address} from '../../util/geo';
 import {format as date} from '../../util/date';
 import {format as cost} from '../../util/cost';
 import plural from '../../util/plural';
+import outdent from 'outdent';
 
 const rules = [
   ['location',
@@ -57,6 +58,29 @@ function status(order) {
     payment_cancelled: ' (платеж отменен)',
     payment_completed: ' (успешно)',
   }[order.status] || ''
+}
+
+export function errors(order) {
+  const errors = [];
+
+  if (!order.category_id)
+    errors.push('Выбрать машину');
+
+  if (!order.date && !order.duration)
+    errors.push('Выбрать дату и время');
+  else if (!order.date)
+    errors.push('Выбрать дату');
+  else if (!order.duration)
+    errors.push('Выбрать время');
+
+  if (!order.payment)
+    errors.push('Выбрать способ оплаты');
+
+  return errors.length
+    ? outdent`Для отправки заказа вам необходимо:
+      
+      ${errors.map(e => ` • ${e}`).join("\n")}`
+    : undefined;
 }
 
 export default function(order) {

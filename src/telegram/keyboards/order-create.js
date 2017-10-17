@@ -1,13 +1,5 @@
 import compact from '../../util/compact';
 
-function ready(order) {
-  return order.category_id
-    && order.date
-    && order.time
-    && order.duration
-    && order.payment;
-}
-
 export default function(order) {
   return {
     parse_mode: 'html',
@@ -21,7 +13,6 @@ export default function(order) {
          {text: `${order.payment === 'cash' ? '◼️' : '◻️'} Наличные`, callback_data: 'payment.cash'}],
         [{text: '📝 Комментарий', callback_data: 'note'},
          {text: '☎️ Номер', callback_data: 'phone-number'}],
-        ready(order) &&
-          [{text: '✅ Отправить заказ', callback_data: 'submit'}],
+        [{text: '✅ Отправить заказ', callback_data: 'submit'}],
         [{text: '❌ Отмена', callback_data: 'cancel'}]])}};
 }
