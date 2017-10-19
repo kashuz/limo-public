@@ -8,23 +8,23 @@ module.exports.up = async (db) => {
     .map(async user => {
       try {
         await telegram.deleteMessage(user.id, user.session['scene.register.message']);
+
+        const {message_id} = await telegram.sendMessage(
+          user.id,
+          'Меню',
+          {reply_markup: {
+            inline_keyboard: [
+              [{text: '🚘 Сделать заказ', callback_data: 'order'}],
+              [{text: '🏷 Тарифы', callback_data: 'plans'}]]}});
+
+        await db('user').where('id', user.id).update({session: {
+          "_flow": {
+            "id": "menu",
+            "_state": {}},
+          "scene.menu.message": message_id}});
       } catch(e) {
 
       }
-
-      const {message_id} = await telegram.sendMessage(
-        user.id,
-        'Меню',
-        {reply_markup: {
-          inline_keyboard: [
-            [{text: '🚘 Сделать заказ', callback_data: 'order'}],
-            [{text: '🏷 Тарифы', callback_data: 'plans'}]]}});
-
-      await db('user').where('id', user.id).update({session: {
-        "_flow": {
-          "id": "menu",
-          "_state": {}},
-        "scene.menu.message": message_id}});
     });
 
   await db('user')
@@ -33,25 +33,23 @@ module.exports.up = async (db) => {
       try {
         await telegram.deleteMessage(user.id, user.session['scene.register.message']);
         await telegram.deleteMessage(user.id, user.session['scene.agreement.message']);
+
+        const {message_id} = await telegram.sendMessage(
+          user.id,
+          'Меню',
+          {reply_markup: {
+            inline_keyboard: [
+              [{text: '🚘 Сделать заказ', callback_data: 'order'}],
+              [{text: '🏷 Тарифы', callback_data: 'plans'}]]}});
+
+        await db('user').where('id', user.id).update({session: {
+          "_flow": {
+            "id": "menu",
+            "_state": {}},
+          "scene.menu.message": message_id}});
       } catch(e) {
 
       }
-
-      const {message_id} = await telegram.sendMessage(
-        user.id,
-        'Меню',
-        {reply_markup: {
-          inline_keyboard: [
-            [{text: '🚘 Сделать заказ', callback_data: 'order'}],
-            [{text: '🏷 Тарифы', callback_data: 'plans'}]]}});
-
-      await db('user').where('id', user.id).update({session: {
-        "_flow": {
-          "id": "menu",
-          "_state": {}},
-        "scene.menu.message": message_id}});
-
-      console.info(`User ${user.id} moved from agreement scene`);
     });
 };
 
