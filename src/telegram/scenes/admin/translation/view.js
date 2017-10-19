@@ -6,12 +6,20 @@ const scene = new Scene('admin.translation.view');
 
 scene.enter(ctx =>
   db('translation').where('id', ctx.flow.state.translation).first().then(
-    translation => ctx.reply(translation.text, {
-      parse_mode: 'html',
-      reply_markup: {
-        inline_keyboard: [[
-          {text: '⬅ Назад', callback_data: 'back'},
-          {text: '✏ Изменить', callback_data: 'update'}]]}})));
+    translation => translation.requires_photo
+      ? ctx.replyWithPhoto(translation.photo || {source: __dirname + '/../../../../../resources/no-photo.png'}, {
+          caption: translation.text,
+          parse_mode: 'html',
+          reply_markup: {
+            inline_keyboard: [[
+              {text: '⬅ Назад', callback_data: 'back'},
+              {text: '✏ Изменить', callback_data: 'update'}]]}})
+      : ctx.reply(translation.text, {
+          parse_mode: 'html',
+          reply_markup: {
+            inline_keyboard: [[
+              {text: '⬅ Назад', callback_data: 'back'},
+              {text: '✏ Изменить', callback_data: 'update'}]]}})));
 
 scene.action('update', ctx =>
   db('translation').where('id', ctx.flow.state.translation).first().then(

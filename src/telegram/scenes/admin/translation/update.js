@@ -4,13 +4,22 @@ import db from '../../../../db';
 
 const scene = new Scene('admin.translation.update');
 
-scene.enter(ctx => ctx
-  .reply(ctx.flow.state.translation.text, {
-    parse_mode: 'html',
-    reply_markup: {
-      inline_keyboard: [[
-        {text: '❌ Отмена', callback_data: 'no'},
-        {text: '💾 Сохранить', callback_data: 'yes'}]]}}));
+scene.enter(ctx => ctx.flow.state.translation.requires_photo
+  ? ctx
+    .replyWithPhoto(ctx.flow.state.translation.photo, {
+      caption: ctx.flow.state.translation.text,
+      parse_mode: 'html',
+      reply_markup: {
+        inline_keyboard: [[
+          {text: '❌ Отмена', callback_data: 'no'},
+          {text: '💾 Сохранить', callback_data: 'yes'}]]}})
+  : ctx
+    .reply(ctx.flow.state.translation.text, {
+      parse_mode: 'html',
+      reply_markup: {
+        inline_keyboard: [[
+          {text: '❌ Отмена', callback_data: 'no'},
+          {text: '💾 Сохранить', callback_data: 'yes'}]]}}));
 
 scene.action('yes', ctx => db('translation')
   .where('id', ctx.flow.state.translation.id)

@@ -10,4 +10,5 @@ module.exports.down = async (db) => {
     table.dropColumn('source');
   })
 };
+
 module.exports.configuration = { transaction: true };

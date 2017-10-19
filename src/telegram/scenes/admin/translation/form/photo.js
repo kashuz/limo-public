@@ -3,33 +3,28 @@ import b from 'bluebird';
 import {Scene} from 'telegraf-flow';
 import compact from '../../../../../util/compact';
 
-const scene = new Scene('admin.translation.form.text');
-const key = 'admin.translation.form.text';
+const scene = new Scene('admin.translation.form.photo');
+const key = 'admin.translation.form.photo';
 
 scene.enter(ctx => ctx.persistent
-  .sendMessage(key, 'Отправьте текст', {
+  .sendMessage(key, 'Отправьте фото', {
     reply_markup: {
       inline_keyboard: compact([
         [{text: '⏩ Пропустить', callback_data: 'skip'}],
         [{text: '❌ Отмена', callback_data: 'cancel'}]])}}));
 
-scene.on('text', ctx => b.all([
+scene.on('photo', ctx => b.all([
   ctx.persistent.deleteMessage(key),
   ctx.flow.enter(
-    ctx.flow.state.translation.requires_photo
-      ? 'admin.translation.form.photo'
-      : 'admin.translation.update',
+    'admin.translation.update',
     {translation: r.assoc(
-       'text', ctx.message.text,
-       ctx.flow.state.translation)})]));
+      'photo', r.last(ctx.message.photo).file_id,
+      ctx.flow.state.translation)})]));
 
 scene.action('skip', ctx => b.all([
   ctx.persistent.deleteMessage(key),
-  ctx.flow.enter(
-    ctx.flow.state.translation.requires_photo
-      ? 'admin.translation.form.photo'
-      : 'admin.translation.update',
-    {translation: ctx.flow.state.translation})]));
+  ctx.flow.enter('admin.translation.update', {
+    translation: ctx.flow.state.translation})]));
 
 scene.action('cancel', ctx => b.all([
   ctx.persistent.deleteMessage(key),
