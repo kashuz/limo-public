@@ -15,7 +15,7 @@ scene.enter(ctx => ctx
     reply_markup: {
       inline_keyboard: [[
         {text: '❌ Отмена', callback_data: 'no'},
-        {text: '❇️💾 Сохранить', callback_data: 'yes'}]]}}));
+        {text: '💾 Сохранить', callback_data: 'yes'}]]}}));
 
 scene.action('yes', ctx => db('car')
   .insert(ctx.flow.state.car)
