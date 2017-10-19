@@ -8,9 +8,7 @@ export default function(ctx, next) {
     persistent(ctx.telegram, {
       get: key => b.resolve(ctx.session[key]),
       set: (key, value) => b.resolve(ctx.session[key] = value),
-      del: key => {
-        delete ctx.session[key];
-        return b.resolve()}}));
+      del: key => b.resolve(ctx.session = r.omit([key], ctx.session))}));
 
   return next();
 }

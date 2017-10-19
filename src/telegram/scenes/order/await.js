@@ -28,7 +28,7 @@ const extra = status => ({
     reply_markup: {
       inline_keyboard: [
         [{text: '🔁 Отправить заново', callback_data: 'retry'}],
-        [{text: '➡ Главное меню', callback_data: 'menu'}]]}},
+        [{text: '➡ Меню', callback_data: 'menu'}]]}},
   accepted: {
     parse_mode: 'html',
     reply_markup: {
@@ -38,7 +38,7 @@ const extra = status => ({
     parse_mode: 'html',
     reply_markup: {
       inline_keyboard: [
-        [{text: '➡ Главное меню', callback_data: 'menu'}]]}}}[status]);
+        [{text: '➡ Меню', callback_data: 'menu'}]]}}}[status]);
 
 scene.enter(botan('order:await:enter',
   ctx => persistent(ctx.telegram)

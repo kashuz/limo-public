@@ -22,9 +22,9 @@ const rules = [
     '🔸 Время: не указано',
     (time, {duration}) => `🔹 В ${time} на ${duration} ${plural(duration, 'час', 'часа', 'часов')}`],
 
-  ['phone_number',
-    order => `🔹 Контактный номер: +${order.user.phone_number}`,
-    value => `🔹 Контактный номер: ${value}`],
+  [order => order.phone_number || order.user.phone_number,
+    order => `🔸 Контактный номер: не указан`,
+    value => `🔹 Контактный номер: ${value.match(/^998\d{9}$/) ? '+' + value : value}`],
 
   ['payment',
     '🔸 Способ оплаты: не выбран',
@@ -36,8 +36,9 @@ const rules = [
 function fields(order) {
   return r.join("\n", r.map(
     ([field, empty, filled]) =>
-      order[field]
-        ? `${filled(order[field], order)}`
+      (typeof field === 'function' ? field(order) : order[field])
+        ? `${filled(typeof field === 'function' ? field(order) : order[field], 
+                    order)}`
         : `${typeof empty === 'function' 
                   ? empty(order)
                   : empty}`,
@@ -61,6 +62,9 @@ export function errors(order) {
 
   if (!order.category_id)
     errors.push('Выбрать машину');
+
+  if (!order.phone_number && !order.user.phone_number)
+    errors.push('Указать номер телефона');
 
   if (!order.date && !order.duration)
     errors.push('Выбрать дату и время');

@@ -7,12 +7,7 @@ import read from '../../sql/read-order';
 const flow = new Flow(
   glob.sync(__dirname + '/../scenes/**/*.js').map(
     file => require(path.resolve(file)).default),
-  {defaultScene: 'register'});
-
-flow.use((ctx, next) =>
-  ctx.user.phone_number || ctx.flow.current.id == 'register'
-    ? next()
-    : ctx.flow.enter('register'));
+  {defaultScene: 'menu'});
 
 if (process.env.NODE_ENV != 'production') {
   flow.command('menu', ctx =>

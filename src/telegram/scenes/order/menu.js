@@ -59,12 +59,9 @@ scene.action('cancel', botan('order:menu:cancel',
 scene.action('submit', botan('order:menu:submit',
   ctx => errors(ctx.flow.state.order)
     ? ctx.answerCallbackQuery(errors(ctx.flow.state.order), undefined, true)
-    : update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
-        .tap(order => b.all([
-          ctx.answerCallbackQuery('Заказ отправлен'),
-          ctx.persistent.editMessageText(key, message(order), {parse_mode: 'html'}),
-          submit(ctx.telegram, order)]))
-        .then(order => ctx.flow.enter('order.await', {order}))));
+    : b.all([
+        ctx.flow.enter('order.agreement', {order: ctx.flow.state.order}),
+        ctx.persistent.editMessageText('scene.order.menu.message', message(ctx.flow.state.order), {parse_mode: 'html'})])));
 
 scene.use(botan('order:menu:default',
   (ctx, next) =>
