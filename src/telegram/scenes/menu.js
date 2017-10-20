@@ -40,4 +40,11 @@ scene.use(botan('menu:default',
       .sendMessage(key, 'Меню', extra(ctx.user.role == 'admin')))
     .then(() => next())));
 
+scene.hears(/^\/start (.+)/, botan('menu:start',
+  (ctx, next) => db('user')
+    .update({source: ctx.match[1]})
+    .where('id', ctx.user.id)
+    .whereNull('source')
+    .then(() => next())));
+
 export default scene;
