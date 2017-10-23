@@ -1,4 +1,5 @@
 import b from 'bluebird';
+import db from '../../db';
 import {Scene} from 'telegraf-flow';
 import create from '../../sql/create-order';
 import compact from '../../util/compact';
