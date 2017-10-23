@@ -12,6 +12,7 @@ const extra = admin => ({
     inline_keyboard: compact([
       [{text: '🚘 Сделать заказ', callback_data: 'order'}],
       [{text: '🏷 Тарифы', callback_data: 'plans'}],
+      [{text: 'ℹ О проекте', callback_data: 'about'}],
       admin &&
         [{text: '⚙️ Админ', callback_data: 'admin'}]])}});
 
@@ -29,6 +30,11 @@ scene.action('plans', botan('menu:plans',
   ctx => b.all([
     ctx.persistent.deleteMessage(key),
     ctx.flow.enter('plans')])));
+
+scene.action('about', botan('menu:about',
+  ctx => b.all([
+    ctx.persistent.deleteMessage(key),
+    ctx.flow.enter('about')])));
 
 scene.action('admin', ctx => b.all([
   ctx.persistent.deleteMessage(key),
