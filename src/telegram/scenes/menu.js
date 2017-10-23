@@ -17,7 +17,7 @@ const extra = admin => ({
 
 scene.enter(botan('menu:enter',
   ctx => ctx.persistent
-    .sendMessage(key, 'Меню', extra(ctx.user.role == 'admin'))));
+    .sendMessage(key, 'Основное меню', extra(ctx.user.role == 'admin'))));
 
 scene.action('order', botan('menu:order',
   ctx => b.all([
@@ -37,7 +37,7 @@ scene.action('admin', ctx => b.all([
 scene.use(botan('menu:default',
   (ctx, next) => ctx.persistent.deleteMessage(key)
     .then(() => ctx.persistent
-      .sendMessage(key, 'Меню', extra(ctx.user.role == 'admin')))
+      .sendMessage(key, 'Основное меню', extra(ctx.user.role == 'admin')))
     .then(() => next())));
 
 scene.hears(/^\/start (.+)/, botan('menu:start',
