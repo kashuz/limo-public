@@ -3,6 +3,7 @@ import {Scene} from 'telegraf-flow';
 import update from '../../../sql/update-order';
 import compact from '../../../util/compact';
 import botan from "../../botan";
+import translate from '../../../translate';
 
 const scene = new Scene('order.note');
 const key = 'scene.order.note.message';
@@ -17,11 +18,8 @@ function extra(order) {
 }
 
 scene.enter(botan('order:note:enter',
-  ctx => ctx.persistent.sendMessage(key,
-    'Пожалуйста введите комментарий к заказу. ' +
-    'Например: свадьба, встреча, аэропорт и т.д. ' +
-    'Чем детальнее тем лучше.',
-    extra(ctx.flow.state.order))));
+  ctx => translate('note').then(text =>
+    ctx.persistent.sendMessage(key, text, extra(ctx.flow.state.order)))));
 
 scene.action('cancel', botan('order:note:cancel',
   ctx => b.all([
@@ -44,8 +42,8 @@ scene.action('clear', botan('order:note:clear',
 scene.use(botan('order:note:default',
   (ctx, next) =>
     ctx.persistent.deleteMessage(key)
-      .then(() => ctx.persistent.sendMessage(key,
-        'Пожалуйста введите комментарий к заказу', extra(ctx.flow.state.order)))
+      .then(() => translate('note'))
+      .then(text => ctx.persistent.sendMessage(key, text, extra(ctx.flow.state.order)))
       .then(() => next())));
 
 export default scene;
