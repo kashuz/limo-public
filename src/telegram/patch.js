@@ -31,7 +31,9 @@ Telegram.prototype.editMessageReplyMarkup = function(...args) {
 const deleteMessage = Telegram.prototype.deleteMessage;
 Telegram.prototype.deleteMessage = function(...args) {
   return deleteMessage.call(this, ...args)
-    .catch(ignore(/message to delete not found/i));
+    .catch(ignore([
+      /message to delete not found/i,
+      /message can't be deleted/i]));
 };
 
 const answerCallbackQuery = Telegram.prototype.answerCallbackQuery;
