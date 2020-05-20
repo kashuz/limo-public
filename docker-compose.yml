@@ -16,7 +16,7 @@ services:
       - DATABASE=limo
       - DATABASE_DEBUG=false
       - REDIS_URL=redis://redis:6379
-      - BOT_TOKEN=912346116:AAEF5fPFYq6sajo_BWKbr2fXPtWOBv9msGc
+      - BOT_TOKEN=1095044510:AAHdWVzhlbigCeg5KJ6VtR5JQzSXT7YIMRM
       - GOOGLE_MAPS_API_KEY=AIzaSyCnWZeUSFPFwlybirqkciMoR0qkAGIzz4E
       - ENABLED_CITIES=Тошкент,Ташкент,Tashkent
       - TZ=UTC
@@ -25,6 +25,7 @@ services:
       - DAY_START=6:00
       - NIGHT_START=21:00
       - BOTAN_TOKEN=
+    restart: always
   db:
     image: postgres
     volumes:
@@ -35,6 +36,7 @@ services:
       POSTGRES_DB: limo
     ports:
       - 5434:5432
-
+    restart: always
   redis:
     image: redis
+    restart: always
