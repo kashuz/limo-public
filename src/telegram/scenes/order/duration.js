@@ -14,7 +14,7 @@ scene.enter(botan('order:duration:enter',
 scene.action(/duration\.(\d+)/, botan('order:duration:duration',
   ctx => update(ctx.flow.state.order.id, {time: ctx.flow.state.start, duration: ctx.match[1]})
     .then(order => b.all([
-      ctx.answerCallbackQuery('Длительность поездки выбрана'),
+      ctx.answerCbQuery('Длительность поездки выбрана'),
       ctx.persistent.deleteMessage(key),
       ctx.flow.enter('order.menu', {order})]))));
 

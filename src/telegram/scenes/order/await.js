@@ -60,7 +60,7 @@ scene.action('payment', botan('order:await:payment',
 scene.action('retry', botan('order:await:retry',
   ctx => update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
     .tap(order => b.all([
-      ctx.answerCallbackQuery('Заказ отправлен'),
+      ctx.answerCbQuery('Заказ отправлен'),
       ctx.persistent.deleteMessage(key(ctx.flow.state.order.status)),
       ctx.persistent.editMessageText('scene.order.menu.message', message(order), {parse_mode: 'html'}),
       submit(ctx.telegram, order)]))

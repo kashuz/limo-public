@@ -46,19 +46,19 @@ scene.action(/payment\.(payme|cash)/, botan('order:menu:payment',
   ctx => update(ctx.flow.state.order.id, {payment: ctx.match[1]})
     .then(order => ctx.flow.state.order = order)
     .then(order => b.all([
-      ctx.answerCallbackQuery('Способ оплаты выбран'),
+      ctx.answerCbQuery('Способ оплаты выбран'),
       ctx.persistent.editMessageText(key, message(order), extra(order))]))));
 
 scene.action('cancel', botan('order:menu:cancel',
   ctx => update(ctx.flow.state.order.id, {status: 'cancelled'})
     .then(order => b.all([
-      ctx.answerCallbackQuery('Заказ отменен'),
+      ctx.answerCbQuery('Заказ отменен'),
       ctx.persistent.editMessageText(key, message(order), {parse_mode: 'html'}),
       ctx.flow.enter('menu')]))));
 
 scene.action('submit', botan('order:menu:submit',
   ctx => errors(ctx.flow.state.order)
-    ? ctx.answerCallbackQuery(errors(ctx.flow.state.order), undefined, true)
+    ? ctx.answerCbQuery(errors(ctx.flow.state.order), undefined, true)
     : b.all([
         ctx.flow.enter('order.agreement', {order: ctx.flow.state.order}),
         ctx.persistent.editMessageText('scene.order.menu.message', message(ctx.flow.state.order), {parse_mode: 'html'})])));

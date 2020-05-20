@@ -35,7 +35,7 @@ scene.on('text', botan('order:note:text',
 scene.action('clear', botan('order:note:clear',
   ctx => update(ctx.flow.state.order.id, {note: null})
     .then(order => b.all([
-      ctx.answerCallbackQuery('Комментарий удален'),
+      ctx.answerCbQuery('Комментарий удален'),
       ctx.persistent.deleteMessage(key),
       ctx.flow.enter('order.menu', {order})]))));
 

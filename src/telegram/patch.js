@@ -36,8 +36,8 @@ Telegram.prototype.deleteMessage = function(...args) {
       /message can't be deleted/i]));
 };
 
-const answerCallbackQuery = Telegram.prototype.answerCallbackQuery;
-Telegram.prototype.answerCallbackQuery = function(...args) {
-  return answerCallbackQuery.call(this, ...args)
+const answerCbQuery = Telegram.prototype.answerCbQuery;
+Telegram.prototype.answerCbQuery = function(...args) {
+  return answerCbQuery.call(this, ...args)
     .catch(ignore(/query_id_invalid/i));
 };

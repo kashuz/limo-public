@@ -89,7 +89,7 @@ scene.action(/select\.(\d+)\.(\d+)/, botan('order:car:select',
       category_id: ctx.match[1],
       car_id: ctx.match[2]})
     .then(order => b.all([
-      ctx.answerCallbackQuery('Машина выбрана'),
+      ctx.answerCbQuery('Машина выбрана'),
       ctx.persistent.deleteMessage(key),
       ctx.flow.enter('order.menu', {order})]))));
 
@@ -98,7 +98,7 @@ scene.action(/random\.(\d+)/, botan('order:car:random',
       category_id: ctx.match[1],
       car_id: null})
     .then(order => b.all([
-      ctx.answerCallbackQuery('Класс выбран'),
+      ctx.answerCbQuery('Класс выбран'),
       ctx.persistent.deleteMessage(key),
       ctx.flow.enter('order.menu', {order})]))));
 

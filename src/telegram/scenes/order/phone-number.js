@@ -68,7 +68,7 @@ scene.action('clear', botan('order:phone-number:clear',
   ctx =>
     update(ctx.flow.state.order.id, {phone_number: null})
       .then(order => b.all([
-        ctx.answerCallbackQuery('Контактный номер удален'),
+        ctx.answerCbQuery('Контактный номер удален'),
         ctx.persistent.deleteMessage(key),
         ctx.flow.enter('order.menu', {order})]))));
 

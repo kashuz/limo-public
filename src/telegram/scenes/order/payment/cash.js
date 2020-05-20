@@ -24,7 +24,7 @@ scene.enter(botan('order:payment:cash:enter',
 scene.action('cancel', botan('order:payment:cash:cancel',
   ctx => update(ctx.flow.state.order.id, {status: 'payment_cancelled', payment_time: new Date()})
     .then(order => b.all([
-      ctx.answerCallbackQuery('Заказа отменен'),
+      ctx.answerCbQuery('Заказа отменен'),
       ctx.persistent.editMessageText(ord, message(order), {parse_mode: 'html'}),
       ctx.persistent.deleteMessage(key),
       ctx.flow.enter('menu'),

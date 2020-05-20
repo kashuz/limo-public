@@ -12,7 +12,7 @@ scene.enter(botan('order:time:enter',
 
 scene.action(/time\.(\d+:\d+)/, botan('order:time:time',
   ctx => b.all([
-    ctx.answerCallbackQuery('Время подачи выбрано'),
+    ctx.answerCbQuery('Время подачи выбрано'),
     ctx.persistent.deleteMessage(key),
     ctx.flow.enter('order.duration', {
       order: ctx.flow.state.order,

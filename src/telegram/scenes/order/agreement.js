@@ -12,7 +12,7 @@ const key = 'scene.order.agreement.message';
 function forward(ctx) {
   return update(ctx.flow.state.order.id, {status: 'submitted', submit_time: new Date()})
     .tap(order => b.all([
-      ctx.answerCallbackQuery('Заказ отправлен'),
+      ctx.answerCbQuery('Заказ отправлен'),
       submit(ctx.telegram, order)]))
     .then(order => ctx.flow.enter('order.await', {order}))
 }

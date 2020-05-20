@@ -38,13 +38,13 @@ const composer = new Composer();
 composer.action(/location\.(\d+)/, ctx =>
   read(ctx.match[1])
     .then(order => b.all([
-      ctx.answerCallbackQuery(),
+      ctx.answerCbQuery(),
       ctx.replyWithVenue(order.location.latitude, order.location.longitude, `Геолокация заказа №${order.id}`, address(order.location))])));
 
 composer.action(/mini\.(\d+)/, ctx =>
   read(ctx.match[1])
     .then(order => b.all([
-      ctx.answerCallbackQuery(),
+      ctx.answerCbQuery(),
       ctx.reply(mini(order), {parse_mode: 'html'})])));
 
 composer.action(/car\.(\d+)\.(\d+)/, ctx =>
@@ -63,7 +63,7 @@ composer.action(/accept\.(\d+)/, ctx =>
           ctx.reply(`ℹ️ ${format(ctx.from)} #accepted order №${order.id}`),
           ctx.editMessageText(message(order), {parse_mode: 'html'})])),
       failure(error =>
-        ctx.answerCallbackQuery(error)))));
+        ctx.answerCbQuery(error)))));
 
 composer.action(/reject\.(\d+)/, ctx =>
   update(ctx.match[1],
@@ -73,7 +73,7 @@ composer.action(/reject\.(\d+)/, ctx =>
       reject(ctx.telegram, order),
       ctx.reply(`ℹ️ ${format(ctx.from)} #rejected order №${order.id}`),
       ctx.editMessageText(message(order), {parse_mode: 'html'})]))
-    .catch(error => ctx.answerCallbackQuery(error + '')));
+    .catch(error => ctx.answerCbQuery(error + '')));
 
 
 const group = composer.middleware();
