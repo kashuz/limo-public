@@ -1,5 +1,5 @@
-import Context from 'telegraf/lib/core/context';
-import Telegram from 'telegraf/lib/telegram';
+import Context from 'telegraf/context';
+import Telegram from 'telegraf/telegram';
 import ignore from '../util/ignore';
 
 Object.defineProperty(Context.prototype, 'from', {

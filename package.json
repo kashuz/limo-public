@@ -20,13 +20,14 @@
     "node-calendar": "^0.1.4",
     "node-geocoder": "^3.21.0",
     "node-schedule": "^1.2.5",
+    "osascript": "^1.2.0",
     "outdent": "^0.3.0",
     "pg": "^7.3.0",
     "ramda": "^0.24.1",
     "ramdasauce": "^2.1.0",
     "redis": "^2.8.0",
     "source-map-support": "^0.5.0",
-    "telegraf": "^3.12.1",
+    "telegraf": "^3.38.0",
     "telegraf-flow": "^8.3.0",
     "telegraf-logger": "^1.0.3",
     "telegraf-ratelimit": "^1.1.0"
@@ -53,6 +54,8 @@
     "start": "nodemon --exec babel-node -- ./src/index.js",
     "build": "babel src --out-dir build --source-maps inline --plugins source-map-support",
     "db": "node tools/db",
+    "migrate": "node tools/db migrate",
+    "rollback": "node tools/db rollback",
     "deploy": "shipit production deploy"
   }
 }

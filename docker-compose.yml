@@ -1,0 +1,40 @@
+version: '3.4'
+services:
+  bot:
+    build:
+      context: .
+    working_dir: /app
+    command: sh -c "npm run migrate && node ./build/index.js"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=limo
+      - DATABASE_PASSWORD=433d01b4c8ee41f48eb7cf9608282ec4
+      - DATABASE=limo
+      - DATABASE_DEBUG=false
+      - REDIS_URL=redis://redis:6379
+      - BOT_TOKEN=912346116:AAEF5fPFYq6sajo_BWKbr2fXPtWOBv9msGc
+      - GOOGLE_MAPS_API_KEY=AIzaSyCnWZeUSFPFwlybirqkciMoR0qkAGIzz4E
+      - ENABLED_CITIES=Тошкент,Ташкент,Tashkent
+      - TZ=UTC
+      - GROUP_ID=
+      - HANDLE_TIMEOUT=30
+      - DAY_START=6:00
+      - NIGHT_START=21:00
+      - BOTAN_TOKEN=
+  db:
+    image: postgres
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: limo
+      POSTGRES_PASSWORD: 433d01b4c8ee41f48eb7cf9608282ec4
+      POSTGRES_DB: limo
+    ports:
+      - 5434:5432
+
+  redis:
+    image: redis
