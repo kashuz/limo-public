@@ -20,7 +20,7 @@ services:
       - GOOGLE_MAPS_API_KEY=AIzaSyCnWZeUSFPFwlybirqkciMoR0qkAGIzz4E
       - ENABLED_CITIES=Тошкент,Ташкент,Tashkent
       - TZ=UTC
-      - GROUP_ID=
+      - GROUP_ID=-339453910
       - HANDLE_TIMEOUT=30
       - DAY_START=6:00
       - NIGHT_START=21:00

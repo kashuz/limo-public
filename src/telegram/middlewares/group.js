@@ -79,10 +79,13 @@ composer.action(/reject\.(\d+)/, ctx =>
 const group = composer.middleware();
 
 export default function middleware(ctx, next) {
-  if (ctx.chat && ctx.chat.id < 0)
+  if (ctx.chat && ctx.chat.id < 0) {
+    if (ctx.chat.id != process.env.GROUP_ID)
+      console.warn("Group mismatch:", ctx.chat.id, process.env.GROUP_ID);
     return ctx.chat.id == process.env.GROUP_ID
       ? group(ctx, () => b.resolve())
       : b.resolve();
+  }
 
   return next();
 }
