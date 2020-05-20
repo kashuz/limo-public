@@ -29,7 +29,7 @@ services:
   db:
     image: postgres
     volumes:
-      - /var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: limo
       POSTGRES_PASSWORD: 433d01b4c8ee41f48eb7cf9608282ec4
@@ -40,3 +40,5 @@ services:
   redis:
     image: redis
     restart: always
+volumes:
+  postgres: {}
