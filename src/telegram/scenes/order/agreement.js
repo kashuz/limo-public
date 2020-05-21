@@ -21,7 +21,7 @@ const extra = {
   reply_markup: {
     remove_keyboard: true,
     inline_keyboard: [[{
-      text: '✅ Принить условия и отправить заказ',
+      text: '✅ Принять условия и отправить заказ',
       callback_data: 'agreement.yes'}]]}};
 
 scene.enter(botan('order:agreement:enter',
